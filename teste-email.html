@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teste de E-mail — Mude (Diagnóstico)</title>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<style>
+body{font-family:Arial,Helvetica,sans-serif;background:#FBFAF7;color:#1a1a1a;max-width:640px;margin:0 auto;padding:24px 18px;line-height:1.5}
+h1{font-size:22px;border-bottom:2px solid #BF9B5A;padding-bottom:8px}
+.box{background:#fff;border:1px solid #E7E4DD;border-radius:12px;padding:18px;margin-top:16px}
+code{background:#F5F2EA;padding:1px 6px;border-radius:5px;font-size:13px}
+button{font-size:15px;padding:14px 22px;border:none;border-radius:10px;background:#0E0E0E;color:#fff;cursor:pointer;margin:8px 8px 0 0}
+button.alt{background:#BF9B5A}
+button:disabled{opacity:.5}
+#out{margin-top:16px;font-size:15px;white-space:pre-wrap;word-break:break-word;border-radius:10px;padding:16px;display:none}
+.ok{background:#E7F3EA;border:1px solid #3C7A4E;color:#205232}
+.err{background:#F7E7E7;border:1px solid #B23A3A;color:#7d2020}
+.muted{color:#6E6E6E;font-size:13px}
+</style>
+</head>
+<body>
+<h1>Teste de E-mail — Diagnóstico Mude</h1>
+<div class="box">
+  <div class="muted">Configuração atual desta plataforma:</div>
+  <p>Service: <code id="csvc"></code><br>Template: <code id="ctpl"></code><br>Public Key: <code id="cpk"></code></p>
+  <p class="muted">Clique para enviar um e-mail de teste para <b>mario@mudeimobiliaria.com.br</b>. O resultado (sucesso ou o motivo do erro) aparece abaixo.</p>
+  <button id="b1" onclick="testar(false)">1) Enviar teste SEM anexo</button>
+  <button id="b2" class="alt" onclick="testar(true)">2) Enviar teste COM anexo</button>
+  <div id="out"></div>
+</div>
+<div class="box muted">
+  Como ler o resultado:<br>
+  • <b>✅ SUCESSO</b> = a configuração está certa; se o e-mail não aparecer, veja a caixa de Spam.<br>
+  • <b>❌ status 400/422</b> = quase sempre o template (To Email vazio ou variável faltando).<br>
+  • <b>❌ status 403 / "origin"</b> = domínio bloqueado em Account → Security (Allowed Origins).<br>
+  • <b>❌ "Public Key" / 401</b> = chave incorreta.<br>
+  • <b>❌ "account not found" / service</b> = Service ID errado ou serviço de e-mail desconectado.<br>
+  Me mande exatamente o texto que aparecer.
+</div>
+
+<script>
+const CFG={ service:'service_y3sqtti', template:'template_mc618f5', publicKey:'lERCa0snZ7xZq0E5Y' };
+document.getElementById('csvc').textContent=CFG.service;
+document.getElementById('ctpl').textContent=CFG.template;
+document.getElementById('cpk').textContent=CFG.publicKey;
+try{ emailjs.init({publicKey:CFG.publicKey}); }catch(e){}
+
+function show(txt,ok){
+  const o=document.getElementById('out');
+  o.style.display='block';o.className=ok?'ok':'err';o.textContent=txt;
+}
+async function testar(comAnexo){
+  document.getElementById('b1').disabled=true;document.getElementById('b2').disabled=true;
+  show('Enviando…',true);
+  if(typeof emailjs==='undefined'){show('❌ A biblioteca do EmailJS não carregou (verifique a conexão/CDN).',false);reset();return;}
+  const params={
+    cliente:'TESTE DIAGNÓSTICO',
+    tipo:'Teste',
+    corretor:'Mário Rubens',
+    to_email:'mario@mudeimobiliaria.com.br',
+    reply_to:'teste@teste.com',
+    report_html:'<div style="font-family:Arial"><h2 style="color:#A07E3E">Teste de Autorização</h2><p>Se você recebeu este e-mail, a configuração está correta.</p></div>',
+    message:'Teste de envio da plataforma Mude.'
+  };
+  if(comAnexo){
+    params.content_pdf=btoa('PDF de teste'); // base64 minúsculo só para validar o anexo
+    params.content_word=btoa('Word de teste');
+  }
+  try{
+    const r=await emailjs.send(CFG.service,CFG.template,params);
+    show('✅ SUCESSO! (status '+r.status+' '+r.text+')\n\nO e-mail de teste foi aceito pelo EmailJS'+(comAnexo?' COM anexo':' SEM anexo')+'.\nConfira a caixa de entrada e o Spam de mario@mudeimobiliaria.com.br.',true);
+  }catch(e){
+    let det='status: '+(e&&e.status!==undefined?e.status:'?')+'\nmensagem: '+(e&&e.text?e.text:(e&&e.message?e.message:JSON.stringify(e)));
+    show('❌ ERRO no envio'+(comAnexo?' COM anexo':' SEM anexo')+':\n\n'+det,false);
+  }
+  reset();
+}
+function reset(){document.getElementById('b1').disabled=false;document.getElementById('b2').disabled=false;}
+</script>
+</body>
+</html>
