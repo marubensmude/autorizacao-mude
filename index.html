@@ -6,6 +6,8 @@
 <title>Mude Imóveis — Autorização de Vendas</title>
 <link rel="icon" type="image/png" href="Preto.png">
 <link rel="apple-touch-icon" href="Preto.png">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.2/html2pdf.bundle.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -1336,7 +1338,8 @@ function condominioLabel(){
   if(sel==='Outro (não listado)')return val('condominio_outro')||'Sim';
   return sel||'Sim';
 }
-function row(k,v){return v&&v!=='—'&&v!==''?`<div class="sum-row"><div class="k">${k}</div><div class="v">${v}</div></div>`:'';}
+function escHTML(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function row(k,v){return v&&v!=='—'&&v!==''?`<div class="sum-row"><div class="k">${k}</div><div class="v">${escHTML(v)}</div></div>`:'';}
 
 function buildSummary(){
   $$('.step').forEach(s=>s.classList.remove('active'));
@@ -1427,6 +1430,23 @@ function fichaTextoPlano(){
   return out;
 }
 function grupos(){return $$('#fichaContent .sum-group');}
+const esc=s=>(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+/* Corpo do e-mail em HTML — mesmo layout do relatório do cliente */
+function reportHTML(){
+  let h=`<div style="font-family:Arial,Helvetica,sans-serif;max-width:660px;margin:0 auto;color:#1a1a1a">`;
+  h+=`<div style="border-bottom:3px solid #BF9B5A;padding-bottom:10px;margin-bottom:6px"><span style="font-size:22px;font-weight:bold;color:#0E0E0E">Autorização de Vendas</span><br><span style="font-size:11px;color:#A07E3E;letter-spacing:2px">MUDE IMÓVEIS &middot; PREMIUM</span></div>`;
+  grupos().forEach(g=>{
+    const t=(g.querySelector('h3')?g.querySelector('h3').textContent.trim():'');
+    h+=`<div style="margin:14px 0 4px;font-size:13px;font-weight:bold;color:#A07E3E;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid #e7e4dd;padding-bottom:3px">${esc(t)}</div>`;
+    h+=`<table style="width:100%;border-collapse:collapse;font-size:13px">`;
+    g.querySelectorAll('.sum-row').forEach(r=>{
+      h+=`<tr><td style="width:38%;color:#666;padding:4px 8px 4px 0;vertical-align:top;border-bottom:1px solid #f3f1ec">${esc(r.querySelector('.k').textContent.trim())}</td><td style="color:#111;padding:4px 0;border-bottom:1px solid #f3f1ec">${esc(r.querySelector('.v').textContent.trim())}</td></tr>`;
+    });
+    h+=`</table>`;
+  });
+  h+=`<div style="margin-top:16px;border-top:1px solid #e7e4dd;padding-top:8px;font-size:11px;color:#888"><b>MRM Negócios e Consultorias Imobiliárias Ltda. — Mude Imóveis</b> &middot; CRECI/MS 6052-J &middot; Dourados-MS<br>Autorização registrada eletronicamente em ${new Date().toLocaleString('pt-BR')}. Mude que a Gente te Acompanha.</div></div>`;
+  return h;
+}
 function fichaHTML(){
   const dir=location.href.replace(/[^\/]*$/,'');
   const css=`@page{size:A4;margin:13mm 14mm}
@@ -1452,34 +1472,100 @@ function fichaHTML(){
   return `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Autorização Premium Mude — ${val('prop_nome')||'Cliente'}</title><style>${css}</style></head><body>${body}</body></html>`;
 }
 function nomeArq(){return (val('prop_nome')||'cliente').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^\w]+/g,'-').replace(/^-|-$/g,'');}
-window.baixarPDF=()=>{
-  const w=window.open('','_blank');
-  if(!w){alert('Permita pop-ups/janelas para gerar o PDF Premium.');return false;}
-  w.document.write(fichaHTML());w.document.close();
-  setTimeout(()=>{try{w.focus();w.print();}catch(e){}},500);
-  return true;
-};
-function gerarWordDoc(){
-  let inner=`<div style="font-family:Calibri,Arial,sans-serif;color:#1a1a1a">`;
-  inner+=`<h1 style="color:#0E0E0E;border-bottom:2px solid #BF9B5A;padding-bottom:6px">Autorização de Vendas — Mude Imóveis</h1>`;
+
+/* ===== CONFIG EMAILJS ===== */
+const EMAILJS_CFG={ service:'service_y3sqtti', template:'template_mc618f5', publicKey:'lERCa0snZ7xZq0E5Y' };
+try{ if(window.emailjs&&EMAILJS_CFG.publicKey){emailjs.init({publicKey:EMAILJS_CFG.publicKey});} }catch(e){}
+function emailjsPronto(){return !!(window.emailjs&&EMAILJS_CFG.publicKey&&EMAILJS_CFG.publicKey.indexOf('SUA_')!==0);}
+
+/* PDF Premium (html2pdf) — baixa localmente e retorna base64 para anexo */
+function fichaElement(){
+  const dir=location.href.replace(/[^\/]*$/,'');
+  const w=document.createElement('div');
+  w.style.cssText='width:760px;padding:6px 10px;font-family:Arial,Helvetica,sans-serif;color:#1a1a1a;background:#fff;font-size:12px;line-height:1.5';
+  let body=`<div style="display:flex;align-items:center;gap:14px;border-bottom:2px solid #BF9B5A;padding-bottom:10px;margin-bottom:12px"><img src="${dir}Preto.png" style="height:58px" crossorigin="anonymous" onerror="this.style.display='none'"><div><div style="font-size:22px;font-weight:700;color:#0E0E0E">Autorização de Vendas</div><div style="font-size:10px;color:#A07E3E;letter-spacing:3px">MUDE IMÓVEIS · PREMIUM</div></div></div>`;
+  grupos().forEach(g=>{
+    const h=g.querySelector('h3');
+    body+=`<div style="margin-bottom:9px;page-break-inside:avoid"><div style="font-size:11px;color:#A07E3E;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid #e7e4dd;padding-bottom:3px;margin-bottom:3px">${h?h.textContent.trim():''}</div>`;
+    g.querySelectorAll('.sum-row').forEach(r=>{body+=`<div style="display:flex;font-size:11px;padding:2px 0;border-bottom:1px solid #f3f1ec"><div style="width:36%;color:#666;padding-right:8px">${r.querySelector('.k').textContent.trim()}</div><div style="width:64%;color:#111">${r.querySelector('.v').textContent.trim()}</div></div>`;});
+    body+=`</div>`;
+  });
+  body+=`<div style="margin-top:12px;border-top:1px solid #e7e4dd;padding-top:7px;font-size:9px;color:#888;text-align:center"><b>MRM Negócios e Consultorias Imobiliárias Ltda. — Mude Imóveis</b> · CRECI/MS 6052-J · Dourados-MS<br>Autorização registrada eletronicamente em ${new Date().toLocaleString('pt-BR')}. Mude que a Gente te Acompanha.</div>`;
+  w.innerHTML=body;return w;
+}
+async function gerarPDF(baixar){
+  if(typeof html2pdf==='undefined'){ if(baixar)window.baixarPDFprint(); return null; }
+  const el=fichaElement();el.style.position='fixed';el.style.left='-9999px';el.style.top='0';document.body.appendChild(el);
+  const opt={margin:[10,10,12,10],filename:'Autorizacao-Mude-'+nomeArq()+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:{scale:2,useCORS:true},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}};
+  let base64=null;
+  try{
+    const worker=html2pdf().set(opt).from(el).toPdf();
+    const pdf=await worker.get('pdf');
+    base64=pdf.output('datauristring').split(',')[1];
+    if(baixar)pdf.save(opt.filename);
+  }catch(e){console.error(e);}
+  document.body.removeChild(el);
+  return base64;
+}
+window.baixarPDFprint=()=>{const w=window.open('','_blank');if(!w){alert('Permita pop-ups para gerar o PDF.');return;}w.document.write(fichaHTML());w.document.close();setTimeout(()=>{try{w.focus();w.print();}catch(e){}},500);};
+
+/* Word editável (.doc) — baixa e retorna base64 */
+function wordHTML(){
+  let inner=`<div style="font-family:Calibri,Arial,sans-serif;color:#1a1a1a"><h1 style="color:#0E0E0E;border-bottom:2px solid #BF9B5A;padding-bottom:6px">Autorização de Vendas — Mude Imóveis</h1>`;
   grupos().forEach(g=>{
     const h=g.querySelector('h3');inner+=`<h2 style="color:#A07E3E;font-size:14px;margin:16px 0 4px">${h?h.textContent.trim():''}</h2><table style="width:100%;border-collapse:collapse">`;
     g.querySelectorAll('.sum-row').forEach(r=>{inner+=`<tr><td style="width:35%;color:#666;padding:3px 6px;border-bottom:1px solid #eee;vertical-align:top">${r.querySelector('.k').textContent.trim()}</td><td style="padding:3px 6px;border-bottom:1px solid #eee">${r.querySelector('.v').textContent.trim()}</td></tr>`;});
     inner+=`</table>`;
   });
   inner+=`<p style="margin-top:18px;font-size:11px;color:#888">MRM Negócios e Consultorias Imobiliárias Ltda. — Mude Imóveis · CRECI/MS 6052-J · Dourados-MS<br>Documento gerado em ${new Date().toLocaleString('pt-BR')}.</p></div>`;
-  const html=`<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'></head><body>${inner}</body></html>`;
-  const blob=new Blob(['﻿'+html],{type:'application/msword'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='Autorizacao-Mude-'+nomeArq()+'.doc';
-  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  return `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'></head><body>${inner}</body></html>`;
 }
-window.finalizar=()=>{
-  gerarWordDoc();
-  baixarPDF();
-  const assunto='Autorização de Vendas — '+(val('prop_nome')||'Novo imóvel')+' ('+((TIPOS.find(t=>t.id===val('tipo'))||{}).nome||'')+')';
-  const link='mailto:'+EMAIL_MUDE+'?subject='+encodeURIComponent(assunto)+'&body='+encodeURIComponent(fichaTextoPlano());
-  setTimeout(()=>{window.location.href=link;},1100);
-  alert('Autorização concluída!\n\n• PDF Premium (A4) aberto para download.\n• Cópia em Word editável (.doc) baixada.\n• Seu e-mail abrirá para enviar a Autorização à Mude ('+EMAIL_MUDE+').\n\nNo sistema final, o PDF e o Word serão anexados e enviados automaticamente, com entrada direta no CRM.\n\nMude que a Gente te Acompanha.');
+function gerarWordDoc(baixar){
+  const html='﻿'+wordHTML();
+  if(baixar){const blob=new Blob([html],{type:'application/msword'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='Autorizacao-Mude-'+nomeArq()+'.doc';document.body.appendChild(a);a.click();document.body.removeChild(a);}
+  return btoa(unescape(encodeURIComponent(html)));
+}
+window.finalizar=async()=>{
+  const btn=$('#summary .btn-gold');
+  if(btn){btn.disabled=true;btn.dataset.txt=btn.innerHTML;btn.innerHTML='Enviando…';}
+  let pdf64=null,word64=null;
+  try{
+    pdf64=await gerarPDF(true);            // baixa o PDF e gera base64
+    word64=gerarWordDoc(true);             // baixa o Word e gera base64
+  }catch(e){console.error(e);}
+  const base={
+    cliente: val('prop_nome')||'Cliente',
+    tipo: (TIPOS.find(t=>t.id===val('tipo'))||{}).nome||'',
+    corretor: val('corretor')||'',
+    to_email: EMAIL_MUDE,
+    reply_to: val('prop_email')||'',
+    report_html: reportHTML(),
+    message: fichaTextoPlano()
+  };
+  const errMsg=e=>(e&&e.text)?e.text:(e&&e.message?e.message:e);
+  const mailtoFallback=()=>{window.location.href='mailto:'+EMAIL_MUDE+'?subject='+encodeURIComponent('Autorização de Vendas — '+base.cliente)+'&body='+encodeURIComponent(base.message);};
+  if(emailjsPronto()){
+    try{
+      // 1ª tentativa: com PDF + Word anexados
+      await emailjs.send(EMAILJS_CFG.service,EMAILJS_CFG.template,Object.assign({},base,{content_pdf:pdf64||'',content_word:word64||''}));
+      alert('Autorização enviada com sucesso à Mude Imóveis!\n\n• E-mail (formatado) entregue em '+EMAIL_MUDE+' com o PDF e o Word anexados.\n• Cópias também foram baixadas no seu dispositivo.\n\nMude que a Gente te Acompanha.');
+    }catch(err1){
+      console.error('Falha com anexos:',err1);
+      try{
+        // 2ª tentativa: só o relatório formatado no corpo (cabe no plano gratuito)
+        await emailjs.send(EMAILJS_CFG.service,EMAILJS_CFG.template,base);
+        alert('Autorização enviada à Mude Imóveis!\n\n• E-mail formatado entregue em '+EMAIL_MUDE+'.\n• O PDF e o Word foram baixados no seu dispositivo.\n\nObs.: o envio COM anexos exige o plano pago do EmailJS (motivo: '+errMsg(err1)+').\n\nMude que a Gente te Acompanha.');
+      }catch(err2){
+        console.error('Falha sem anexos:',err2);
+        mailtoFallback();
+        alert('Não foi possível enviar automaticamente.\nMotivo: '+errMsg(err2)+'\n\nSeu e-mail foi aberto como alternativa e os arquivos foram baixados.\n\nMe avise essa mensagem de erro para eu ajustar.');
+      }
+    }
+  }else{
+    mailtoFallback();
+    alert('PDF e Word baixados. Seu e-mail foi aberto para envio à Mude ('+EMAIL_MUDE+').\n\n(Envio automático indisponível — verifique a conexão/EmailJS.) Mude que a Gente te Acompanha.');
+  }
+  if(btn){btn.disabled=false;btn.innerHTML=btn.dataset.txt;}
 };
 
 /* data default */
