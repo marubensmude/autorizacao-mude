@@ -1,0 +1,1490 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mude Imóveis — Autorização de Vendas</title>
+<link rel="icon" type="image/png" href="Preto.png">
+<link rel="apple-touch-icon" href="Preto.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --preto:#0E0E0E;
+  --preto-suave:#1A1A1A;
+  --grafite:#3A3A3A;
+  --cinza:#6E6E6E;
+  --cinza-claro:#9A9A9A;
+  --linha:#E7E4DD;
+  --linha-forte:#D8D3C7;
+  --fundo:#FBFAF7;
+  --branco:#FFFFFF;
+  --creme:#F5F2EA;
+  --dourado:#BF9B5A;
+  --dourado-claro:#D4B777;
+  --dourado-escuro:#A07E3E;
+  --dourado-suave:#F3ECDC;
+  --erro:#B23A3A;
+  --ok:#3C7A4E;
+  --sombra:0 1px 2px rgba(20,18,12,.04), 0 8px 30px rgba(20,18,12,.06);
+  --sombra-forte:0 10px 40px rgba(20,18,12,.12);
+  --raio:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Jost',sans-serif;
+  background:var(--fundo);
+  color:var(--preto-suave);
+  font-weight:300;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,.serif{font-family:'Cormorant Garamond',serif;font-weight:600;letter-spacing:.2px}
+
+/* ---------- TOPO ---------- */
+.topbar{
+  background:var(--preto);
+  color:var(--branco);
+  text-align:center;
+  font-size:11.5px;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  padding:9px 16px;
+  font-weight:300;
+}
+.topbar b{color:var(--dourado-claro);font-weight:400}
+
+header.brand{
+  background:var(--branco);
+  border-bottom:1px solid var(--linha);
+  padding:30px 24px 26px;
+  text-align:center;
+  position:relative;
+}
+.logo-mark{
+  display:inline-flex;align-items:center;gap:14px;justify-content:center;
+}
+.logo-diamond{
+  width:30px;height:30px;flex:none;
+  border:1.6px solid var(--dourado);
+  transform:rotate(45deg);
+  display:flex;align-items:center;justify-content:center;
+}
+.logo-diamond span{
+  transform:rotate(-45deg);
+  font-family:'Cormorant Garamond',serif;
+  font-weight:700;color:var(--dourado-escuro);font-size:15px;
+}
+.logo-img{height:96px;width:auto;display:inline-block}
+.slogan{margin-top:10px;font-size:12.5px;letter-spacing:2.5px;color:var(--dourado-escuro);text-transform:uppercase;font-weight:400}
+
+/* ---------- LAYOUT ---------- */
+.wrap{max-width:920px;margin:0 auto;padding:34px 22px 90px}
+.doc-title{text-align:center;margin-bottom:6px}
+.doc-title h1{font-size:38px;color:var(--preto);line-height:1.05}
+.doc-title p{max-width:620px;margin:14px auto 0;color:var(--cinza);font-size:15px}
+
+/* ---------- STEPPER ---------- */
+.stepper{
+  display:flex;justify-content:center;flex-wrap:wrap;gap:6px;
+  margin:34px auto 30px;max-width:860px;
+}
+.stepper .st{
+  display:flex;align-items:center;gap:9px;
+  padding:8px 14px;border-radius:40px;
+  font-size:12px;letter-spacing:.5px;color:var(--cinza-claro);
+  cursor:pointer;border:1px solid transparent;transition:.25s;
+  white-space:nowrap;
+}
+.stepper .st .n{
+  width:23px;height:23px;border-radius:50%;flex:none;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11.5px;border:1.4px solid var(--linha-forte);color:var(--cinza-claro);
+  background:var(--branco);transition:.25s;font-weight:400;
+}
+.stepper .st.active{color:var(--preto);border-color:var(--linha-forte);background:var(--branco);box-shadow:var(--sombra)}
+.stepper .st.active .n{background:var(--dourado);border-color:var(--dourado);color:#fff}
+.stepper .st.done .n{background:var(--preto);border-color:var(--preto);color:var(--dourado-claro)}
+.stepper .st.done{color:var(--grafite)}
+
+/* ---------- CARD ---------- */
+.card{
+  background:var(--branco);
+  border:1px solid var(--linha);
+  border-radius:var(--raio);
+  box-shadow:var(--sombra);
+  overflow:hidden;
+}
+.card-head{
+  padding:26px 30px 20px;border-bottom:1px solid var(--linha);
+  display:flex;align-items:flex-start;gap:16px;
+  background:linear-gradient(180deg,var(--branco),var(--fundo));
+}
+.card-head .ic{
+  width:46px;height:46px;border-radius:11px;flex:none;
+  background:var(--dourado-suave);border:1px solid var(--linha-forte);
+  display:flex;align-items:center;justify-content:center;color:var(--dourado-escuro);
+}
+.card-head .ic svg{width:24px;height:24px}
+.card-head h2{font-size:25px;color:var(--preto);line-height:1.1}
+.card-head .sub{font-size:13px;color:var(--cinza);margin-top:3px;font-weight:300}
+.card-head .badge{margin-left:auto;font-size:11px;letter-spacing:1px;color:var(--dourado-escuro);border:1px solid var(--linha-forte);padding:4px 11px;border-radius:30px;text-transform:uppercase;white-space:nowrap}
+
+.card-body{padding:28px 30px 30px}
+.step{display:none;animation:fade .35s ease}
+.step.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ---------- FORM ---------- */
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:18px 20px}
+.field{grid-column:span 6;display:flex;flex-direction:column}
+.field.full{grid-column:span 12}
+.field.third{grid-column:span 4}
+.field.quarter{grid-column:span 3}
+.field.twothird{grid-column:span 8}
+label{font-size:12.5px;letter-spacing:.4px;color:var(--grafite);margin-bottom:7px;font-weight:400}
+label .req{color:var(--dourado-escuro);margin-left:2px}
+label .hint{display:block;font-size:11px;color:var(--cinza-claro);font-weight:300;margin-top:2px;letter-spacing:0}
+input[type=text],input[type=email],input[type=tel],input[type=number],input[type=date],select,textarea{
+  font-family:'Jost',sans-serif;font-size:14px;font-weight:300;color:var(--preto-suave);
+  background:var(--branco);border:1px solid var(--linha-forte);border-radius:9px;
+  padding:11px 13px;width:100%;transition:.18s;
+}
+textarea{resize:vertical;min-height:92px;line-height:1.5}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--dourado);box-shadow:0 0 0 3px rgba(191,155,90,.13)}
+input::placeholder,textarea::placeholder{color:var(--cinza-claro)}
+select{appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23BF9B5A' stroke-width='2'><polyline points='6 9 12 15 18 9'/></svg>");background-repeat:no-repeat;background-position:right 13px center;padding-right:38px}
+.prefix{position:relative}
+.prefix .pf{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--cinza);font-size:14px;pointer-events:none}
+.prefix input{padding-left:40px}
+
+.section-label{
+  font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--dourado-escuro);
+  border-bottom:1px solid var(--linha);padding-bottom:9px;margin:6px 0 4px;grid-column:span 12;
+  display:flex;align-items:center;gap:9px;
+}
+.section-label svg{width:15px;height:15px}
+
+/* ---------- TIPO DE IMÓVEL (cards) ---------- */
+.types{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:13px}
+.type-card{
+  border:1.4px solid var(--linha-forte);border-radius:12px;padding:18px 14px;text-align:center;
+  cursor:pointer;transition:.2s;background:var(--branco);position:relative;
+}
+.type-card:hover{border-color:var(--dourado-claro);transform:translateY(-2px);box-shadow:var(--sombra)}
+.type-card svg{width:30px;height:30px;color:var(--grafite);transition:.2s;stroke-width:1.4}
+.type-card .tname{font-size:13px;margin-top:10px;color:var(--grafite);letter-spacing:.3px}
+.type-card .tsub{font-size:10.5px;color:var(--cinza-claro);margin-top:2px}
+.type-card.sel{border-color:var(--dourado);background:var(--dourado-suave);box-shadow:var(--sombra)}
+.type-card.sel svg,.type-card.sel .tname{color:var(--dourado-escuro)}
+.type-card.sel::after{content:"✓";position:absolute;top:8px;right:10px;color:var(--dourado-escuro);font-size:13px}
+
+/* ---------- RADIO/CHECK PILLS ---------- */
+.choices{display:flex;gap:10px;flex-wrap:wrap}
+.choices.col{flex-direction:column;gap:8px}
+.pill{
+  display:inline-flex;align-items:center;gap:9px;cursor:pointer;
+  border:1.3px solid var(--linha-forte);border-radius:10px;padding:10px 16px;
+  font-size:13.5px;color:var(--grafite);transition:.18s;background:var(--branco);user-select:none;
+}
+.pill:hover{border-color:var(--dourado-claro)}
+.pill input{display:none}
+.pill .dot{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--linha-forte);flex:none;transition:.18s;position:relative}
+.pill.check .dot{border-radius:5px}
+.pill.sel{border-color:var(--dourado);background:var(--dourado-suave);color:var(--preto)}
+.pill.sel .dot{border-color:var(--dourado);background:var(--dourado)}
+.pill.sel .dot::after{content:"";position:absolute;inset:0;margin:auto;width:6px;height:6px;border-radius:50%;background:#fff}
+.pill.check.sel .dot::after{width:5px;height:9px;border-radius:0;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg) translate(-1px,-1px);background:none;top:1px}
+
+/* amenities grid */
+.amen{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px}
+.amen .pill{padding:9px 13px;font-size:13px}
+
+/* ---------- DECLARAÇÃO ---------- */
+.legal-box{
+  background:var(--creme);border:1px solid var(--linha-forte);border-radius:12px;
+  padding:22px 24px;font-size:13px;color:var(--grafite);line-height:1.7;
+}
+.legal-box h4{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--preto);margin-bottom:8px;font-weight:600}
+.legal-box p{margin-bottom:12px}
+.legal-box .ref{font-size:11px;color:var(--cinza-claro);letter-spacing:.3px}
+.legal-box strong{font-weight:500;color:var(--preto-suave)}
+.consent{
+  display:flex;gap:13px;align-items:flex-start;padding:15px 16px;border:1.3px solid var(--linha-forte);
+  border-radius:11px;background:var(--branco);cursor:pointer;margin-top:14px;transition:.18s;
+}
+.consent:hover{border-color:var(--dourado-claro)}
+.consent.sel{border-color:var(--dourado);background:var(--dourado-suave)}
+.consent input{display:none}
+.consent .box{width:20px;height:20px;border-radius:6px;border:1.5px solid var(--linha-forte);flex:none;margin-top:1px;position:relative;transition:.18s}
+.consent.sel .box{background:var(--dourado);border-color:var(--dourado)}
+.consent.sel .box::after{content:"";position:absolute;inset:0;margin:auto;width:5px;height:10px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg) translateY(-1px)}
+.consent .txt{font-size:13px;color:var(--grafite);line-height:1.5}
+.consent .txt b{color:var(--preto);font-weight:500}
+
+.sign-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:6px}
+.sign-pad{border:1px dashed var(--linha-forte);border-radius:11px;height:90px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px;color:var(--cinza-claro);font-size:11px;background:repeating-linear-gradient(90deg,transparent,transparent 8px,#fafafa 8px,#fafafa 9px)}
+
+/* ---------- NOTAS ---------- */
+.note{
+  display:flex;gap:11px;align-items:flex-start;background:var(--dourado-suave);
+  border:1px solid var(--linha-forte);border-left:3px solid var(--dourado);
+  border-radius:9px;padding:13px 15px;font-size:12.5px;color:var(--grafite);margin-top:4px;
+}
+.note svg{width:17px;height:17px;flex:none;color:var(--dourado-escuro);margin-top:1px}
+.grid > .note,.note.full,.grid > .full{grid-column:span 12}
+.crm-tag{
+  display:inline-flex;align-items:center;gap:5px;font-size:10px;letter-spacing:.5px;
+  color:var(--dourado-escuro);background:var(--dourado-suave);border:1px solid var(--linha-forte);
+  padding:2px 8px;border-radius:20px;margin-left:8px;vertical-align:middle;text-transform:uppercase;
+}
+
+/* ---------- NAV ---------- */
+.nav{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-top:30px}
+.btn{
+  font-family:'Jost',sans-serif;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;
+  border-radius:10px;padding:14px 30px;cursor:pointer;transition:.2s;border:1px solid transparent;font-weight:400;
+}
+.btn-primary{background:var(--preto);color:#fff;display:inline-flex;align-items:center;gap:10px}
+.btn-primary:hover{background:var(--dourado-escuro)}
+.btn-primary svg{width:16px;height:16px}
+.btn-ghost{background:transparent;color:var(--cinza);border-color:var(--linha-forte)}
+.btn-ghost:hover{color:var(--preto);border-color:var(--cinza-claro)}
+.btn-ghost.hidden{visibility:hidden}
+.btn-gold{background:var(--dourado);color:#fff}
+.btn-gold:hover{background:var(--dourado-escuro)}
+
+/* ---------- RESUMO ---------- */
+.summary{display:none}
+.summary.active{display:block}
+.sum-row{display:grid;grid-template-columns:230px 1fr;gap:16px;padding:11px 0;border-bottom:1px solid var(--linha);font-size:13.5px}
+.sum-row .k{color:var(--cinza);letter-spacing:.3px}
+.sum-row .v{color:var(--preto-suave)}
+.sum-group{margin-bottom:26px}
+.sum-group h3{font-size:20px;color:var(--preto);margin-bottom:6px;display:flex;align-items:center;gap:9px}
+.sum-group h3 svg{width:18px;height:18px;color:var(--dourado-escuro)}
+
+.err-msg{color:var(--erro);font-size:11.5px;margin-top:5px;display:none}
+.field.invalid input,.field.invalid select,.field.invalid textarea{border-color:var(--erro)}
+.field.invalid .err-msg{display:block}
+
+footer.inst{text-align:center;padding:34px 20px 10px;color:var(--cinza-claro);font-size:11.5px;letter-spacing:.5px}
+footer.inst b{color:var(--grafite);font-weight:400}
+.divider-dot{color:var(--dourado);margin:0 8px}
+
+@media(max-width:680px){
+  .field,.field.third,.field.quarter,.field.twothird{grid-column:span 12}
+  .doc-title h1{font-size:30px}
+  .card-body{padding:22px 18px 24px}
+  .card-head{padding:20px 18px 16px}
+  .sign-grid,.sum-row{grid-template-columns:1fr}
+  .btn{padding:13px 20px}
+  .logo-text{font-size:24px;letter-spacing:4px}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">Captação de Imóveis <b>·</b> Autorização de Vendas <b>·</b> Atendimento Consultivo</div>
+
+<header class="brand">
+  <img class="logo-img" src="Original.png" alt="Mude Imóveis">
+  <div class="slogan">Mude que a Gente te Acompanha</div>
+</header>
+
+<div class="wrap">
+
+  <div class="doc-title">
+    <h1>Autorização de Vendas</h1>
+    <p>Formalize com segurança a intermediação do seu imóvel. Um processo simples, transparente e em conformidade com as normas do CRECI — para que a Mude Imóveis possa promover a venda com toda a estrutura que o seu patrimônio merece.</p>
+  </div>
+
+  <!-- STEPPER -->
+  <nav class="stepper" id="stepper"></nav>
+
+  <div class="card">
+    <div class="card-head">
+      <div class="ic" id="headIcon"></div>
+      <div>
+        <h2 id="headTitle">Identificação do Proprietário</h2>
+        <div class="sub" id="headSub">Quem está autorizando a venda</div>
+      </div>
+      <div class="badge" id="headBadge">Etapa 1 de 8</div>
+    </div>
+
+    <div class="card-body">
+      <form id="form" novalidate>
+
+      <!-- ETAPA 1 — PROPRIETÁRIO -->
+      <section class="step active" data-step="0">
+        <div class="grid">
+          <div class="section-label">Dados do(s) proprietário(s)</div>
+          <div class="field full">
+            <label>Nome(s) completo(s) do(s) proprietário(s)<span class="req">*</span>
+              <span class="hint">Inclua todos os titulares constantes na matrícula do imóvel.</span></label>
+            <input type="text" name="prop_nome" placeholder="Ex.: Antônio Ferreira da Silva Filho" required>
+            <div class="err-msg">Informe o nome do proprietário.</div>
+          </div>
+          <div class="field">
+            <label>Tipo de pessoa<span class="req">*</span></label>
+            <select name="prop_tipo" id="tipoPessoa" required><option>Pessoa Física</option><option>Pessoa Jurídica</option><option>Espólio / Inventário</option></select>
+          </div>
+          <div class="field">
+            <label id="cpfLabel">CPF<span class="req">*</span></label>
+            <input type="text" name="prop_cpf" id="cpfInput" placeholder="000.000.000-00" data-mask="cpfcnpj" data-doc="cpf" required>
+            <div class="err-msg">Informe um CPF válido.</div>
+          </div>
+          <div class="field third">
+            <label>RG / Inscr.</label>
+            <input type="text" name="prop_rg" placeholder="0000000 SSP/MS">
+          </div>
+          <div class="field third">
+            <label>Estado civil</label>
+            <select name="prop_civil"><option value="">Selecione</option><option>Solteiro(a)</option><option>Casado(a)</option><option>União estável</option><option>Divorciado(a)</option><option>Viúvo(a)</option></select>
+          </div>
+          <div class="field third">
+            <label>Profissão</label>
+            <input type="text" name="prop_prof" placeholder="Ex.: Empresário">
+          </div>
+          <div class="field">
+            <label>E-mail<span class="req">*</span></label>
+            <input type="email" name="prop_email" placeholder="nome@email.com" required>
+            <div class="err-msg">Informe um e-mail válido.</div>
+          </div>
+          <div class="field">
+            <label>WhatsApp<span class="req">*</span></label>
+            <input type="tel" name="prop_whats" placeholder="(67) 99999-9999" data-mask="fone" required>
+            <div class="err-msg">Informe um telefone válido.</div>
+          </div>
+          <div class="note full">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+            <span>Havendo mais de um proprietário, a Mude Imóveis coletará os dados complementares e as assinaturas de todos os titulares no momento da formalização.</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ETAPA 2 — CORRETOR + TIPO -->
+      <section class="step" data-step="1">
+        <div class="grid">
+          <div class="section-label">Atendimento</div>
+          <div class="field full">
+            <label>Corretor(a) Mude responsável pela captação</label>
+            <select name="corretor">
+              <option value="">Selecione o corretor</option>
+              <option>Mário Rubens</option><option>Paulo Maioque</option><option>Camila</option>
+              <option>Caio</option><option>João Victor</option><option>Leonardo</option>
+              <option>Mariucia</option><option>Marcus Luiz</option><option>Mariley</option>
+            </select>
+          </div>
+          <div class="field full">
+            <label>Tipo de imóvel a ser vendido<span class="req">*</span>
+              <span class="hint">A seleção ajusta automaticamente os campos da próxima etapa.</span></label>
+            <div class="types" id="types"></div>
+            <input type="hidden" name="tipo" required>
+            <div class="err-msg" style="display:none" id="tipoErr">Selecione o tipo de imóvel.</div>
+          </div>
+          <div class="field full" id="finalidadeWrap" style="display:none">
+            <label id="finalidadeLabel">Finalidade declarada pelo proprietário</label>
+            <div class="choices" id="finalidadeChoices" data-radio="finalidade"></div>
+          </div>
+          <div class="grid" id="finalidadeExtra" style="grid-column:span 12;gap:18px 20px"></div>
+        </div>
+      </section>
+
+      <!-- ETAPA 3 — LOCALIZAÇÃO -->
+      <section class="step" data-step="2">
+        <div class="grid">
+          <div class="section-label" id="endLabel">Endereço do imóvel</div>
+          <div class="field quarter">
+            <label>CEP</label>
+            <input type="text" name="cep" placeholder="79800-000" data-mask="cep">
+          </div>
+          <div class="field twothird">
+            <label>Logradouro (rua / avenida)<span class="req">*</span></label>
+            <input type="text" name="logradouro" placeholder="Ex.: Rua Martin Eberhart" required>
+            <div class="err-msg">Informe o logradouro.</div>
+          </div>
+          <div class="field quarter">
+            <label>Número</label>
+            <input type="text" name="numero" placeholder="685">
+          </div>
+          <div class="field quarter">
+            <label>Complemento</label>
+            <input type="text" name="complemento" placeholder="Bloco / Apto">
+          </div>
+          <div class="field">
+            <label>Bairro / Localidade<span class="req">*</span></label>
+            <input type="text" name="bairro" placeholder="Ex.: Parque Alvorada" required>
+            <div class="err-msg">Informe o bairro.</div>
+          </div>
+          <div class="field third">
+            <label>Cidade</label>
+            <input type="text" name="cidade" placeholder="Dourados" value="Dourados">
+          </div>
+          <div class="field third">
+            <label>UF</label>
+            <input type="text" name="uf" placeholder="MS" value="MS">
+          </div>
+          <div class="field third">
+            <label>Ponto de referência</label>
+            <input type="text" name="referencia" placeholder="Próximo a...">
+          </div>
+
+          <div class="field">
+            <label>Imóvel em condomínio / loteamento fechado?</label>
+            <div class="choices" data-radio="emcond">
+              <label class="pill"><input type="radio" name="emcond" value="Não"><span class="dot"></span>Não</label>
+              <label class="pill"><input type="radio" name="emcond" value="Sim"><span class="dot"></span>Sim</label>
+            </div>
+          </div>
+          <div class="field" id="condWrap" style="display:none">
+            <label>Condomínio fechado / Edifício residencial<span class="hint">Lista mantida pela área administrativa da Mude.</span></label>
+            <select name="condominio_nome" id="condSelect">
+              <option value="">Selecione</option>
+              <optgroup label="Condomínios Fechados">
+                <option>Ares Park &amp; Club</option>
+                <option>Bourbon Premium Residence</option>
+                <option>Ecoville Dourados Residence &amp; Resort I</option>
+                <option>Ecoville Dourados Residence &amp; Resort II</option>
+                <option>Golden Park</option>
+                <option>Green Park Residence</option>
+                <option>Hectares Park &amp; Resort</option>
+                <option>Loteamento Pousada dos Pássaros</option>
+                <option>Ouro Branco Residence</option>
+                <option>Portal de Dourados</option>
+                <option>Porto Madero Premium Residence &amp; Resort</option>
+                <option>Porto Royale Condomínio Resort</option>
+                <option>Porto Seguro Residence &amp; Resort</option>
+                <option>Porto Unique Residence Spa Resort</option>
+                <option>Portofino</option>
+                <option>Terras Alphaville Dourados</option>
+                <option>Vivere da Mata Residence Resort</option>
+                <option>Vivere do Lago</option>
+              </optgroup>
+              <optgroup label="Edifícios Residenciais">
+                <option>Condomínio Mispá</option>
+                <option>Edifício Antilhas</option>
+                <option>Edifício Betel</option>
+                <option>Edifício Elegance</option>
+                <option>Edifício Ethos Hall</option>
+                <option>Edifício Euro Garden Residence SPA &amp; Resort</option>
+                <option>Edifício Gardênia</option>
+                <option>Edifício Gran Village</option>
+                <option>Edifício Heiwa</option>
+                <option>Edifício Ilhas Gregas</option>
+                <option>Edifício Istambul</option>
+                <option>Edifício Itaipú</option>
+                <option>Edifício Jaraguá</option>
+                <option>Edifício Jardins</option>
+                <option>Edifício Jardins do Éden</option>
+                <option>Edifício Living Residence</option>
+                <option>Edifício Loanda</option>
+                <option>Edifício London</option>
+                <option>Edifício Maison Versailles</option>
+                <option>Edifício Manaain</option>
+                <option>Edifício Maragogi</option>
+                <option>Edifício Maria Fernanda</option>
+                <option>Edifício Maria Silvia</option>
+                <option>Edifício Meridian</option>
+                <option>Edifício Milano</option>
+                <option>Edifício Milton Barbosa</option>
+                <option>Edifício Ouro Preto</option>
+                <option>Edifício Paddock</option>
+                <option>Edifício Paladium</option>
+                <option>Edifício Portal</option>
+                <option>Edifício Rajja</option>
+                <option>Edifício Residencial Benguella</option>
+                <option>Edifício Residencial Royal</option>
+                <option>Edifício San Francisco</option>
+                <option>Edifício Sobre as Ondas</option>
+                <option>Edifício Sunset Residence Suíte &amp; Office</option>
+                <option>Edifício Torre do Sol</option>
+                <option>Edifício Veredas</option>
+                <option>Edifício Villa Bella</option>
+                <option>Edifício Village Paris</option>
+                <option>Legacy Exclusive Residence</option>
+                <option>Mirage Residence</option>
+                <option>Residencial Eilat</option>
+                <option>Residencial Idelfonso Pedroso</option>
+                <option>Residencial Mônaco</option>
+                <option>Residencial Rio Dourados</option>
+                <option>Residencial Sereno</option>
+                <option>Residencial Turmalina</option>
+                <option>The One</option>
+              </optgroup>
+              <option>Outro (não listado)</option>
+            </select>
+          </div>
+          <div class="field" id="condOutroWrap" style="display:none">
+            <label>Informe o nome do condomínio</label>
+            <input type="text" name="condominio_outro" placeholder="Nome do loteamento/condomínio">
+          </div>
+
+          <div class="section-label">Registro do imóvel <span class="crm-tag">CRM</span></div>
+          <div class="field third">
+            <label>Nº da matrícula (RI)<span class="hint">Reforça a segurança jurídica.</span></label>
+            <input type="text" name="matricula" placeholder="Ex.: 12.345">
+          </div>
+          <div class="field third">
+            <label>Cartório / Comarca</label>
+            <input type="text" name="cartorio" placeholder="1º Ofício de Dourados">
+          </div>
+          <div class="field third">
+            <label>Inscrição municipal (IPTU / ITR)</label>
+            <input type="text" name="iptu" placeholder="Nº do cadastro">
+          </div>
+
+          <div class="section-label rural-only" style="display:none">Localização da propriedade rural <span class="crm-tag">Rural</span></div>
+          <div class="field rural-only" style="display:none">
+            <label>Nome da propriedade / fazenda</label>
+            <input type="text" name="rural_nome" placeholder="Ex.: Fazenda Santa Maria">
+          </div>
+          <div class="field rural-only" style="display:none">
+            <label>Distância e acesso a partir da cidade</label>
+            <input type="text" name="rural_acesso" placeholder="Ex.: 25 km por asfalto + 3 km de estrada de chão">
+          </div>
+          <div class="field full rural-only" style="display:none">
+            <label>Link do Google Maps / localização<span class="hint">Cole o link do mapa ou as coordenadas (lat, long).</span></label>
+            <input type="text" name="rural_maps" placeholder="https://maps.google.com/...  ou  -22.2210, -54.8120">
+          </div>
+          <div class="field full rural-only" style="display:none">
+            <label>Como chegar / referências de acesso</label>
+            <textarea name="rural_comochegar" placeholder="Descreva o trajeto, sentido, porteiras, pontos de referência, condições da estrada..."></textarea>
+          </div>
+        </div>
+      </section>
+
+      <!-- ETAPA 4 — CARACTERÍSTICAS (DINÂMICO) -->
+      <section class="step" data-step="3">
+        <div class="grid">
+          <div class="section-label" id="caractTitle">Características do imóvel</div>
+          <div class="field" id="condicaoBlock">
+            <label id="condicaoLabel">Condição do imóvel<span class="req">*</span></label>
+            <div class="choices" id="condicaoChoices" data-radio="condicao"></div>
+            <div class="err-msg" style="display:none">Selecione uma opção.</div>
+          </div>
+        </div>
+        <div id="dynamicFields" style="margin-top:18px"></div>
+        <div class="grid" style="margin-top:18px">
+          <div class="field full">
+            <label>Descrição complementar do imóvel
+              <span class="hint">Detalhes que valorizam: padrão de acabamento, reformas, diferenciais, estilo de vida que o imóvel proporciona.</span></label>
+            <textarea name="descricao" placeholder="Ex.: Casa com 360m² de área total e 245m² construída, 1 suíte com closet, cozinha gourmet integrada, piscina de alvenaria, churrasqueira e garagem coberta para 2 carros..."></textarea>
+          </div>
+          <div class="field full">
+            <label>Proximidades e pontos de interesse
+              <span class="hint">O que há de bom ao redor — escolas, supermercados, hospitais, parques, vias principais. Valoriza o anúncio.</span></label>
+            <input type="text" name="proximidades" placeholder="Ex.: a 600m da Elite Rede de Ensino, próximo ao Hospital do Coração e à Av. Marcelino Pires">
+          </div>
+        </div>
+      </section>
+
+      <!-- ETAPA 5 — CONDIÇÕES COMERCIAIS -->
+      <section class="step" data-step="4">
+        <div class="grid">
+          <div class="section-label">Valor e condições</div>
+          <div class="field">
+            <label>Valor pretendido pelo(s) proprietário(s)<span class="req">*</span></label>
+            <div class="prefix"><span class="pf">R$</span><input type="text" name="valor" inputmode="numeric" placeholder="1.850.000" data-mask="moeda" required></div>
+            <div class="err-msg">Informe o valor pretendido.</div>
+          </div>
+          <div class="field">
+            <label id="comissaoLabel">Comissão de intermediação<span class="req">*</span></label>
+            <div class="prefix"><input type="text" name="comissao" id="comissaoInput" value="5% sobre o valor efetivamente vendido" readonly style="padding-left:13px;color:var(--cinza)"></div>
+          </div>
+          <div class="field full">
+            <label>Formas de pagamento aceitas <span class="hint">Selecione todas as que se aplicam.</span></label>
+            <div class="amen" data-check="pagamento">
+              <label class="pill check"><input type="checkbox" value="À vista"><span class="dot"></span>À vista</label>
+              <label class="pill check"><input type="checkbox" value="Financiamento bancário"><span class="dot"></span>Financiamento bancário</label>
+              <label class="pill check"><input type="checkbox" value="Parcelamento direto"><span class="dot"></span>Parcelamento direto</label>
+              <label class="pill check"><input type="checkbox" value="Permuta"><span class="dot"></span>Aceita permuta</label>
+              <label class="pill check"><input type="checkbox" value="FGTS"><span class="dot"></span>FGTS</label>
+              <label class="pill check"><input type="checkbox" value="Consórcio"><span class="dot"></span>Consórcio</label>
+            </div>
+          </div>
+          <div class="field full" id="permutaWrap" style="display:none">
+            <label>Detalhes da permuta</label>
+            <input type="text" name="permuta_det" placeholder="Ex.: aceita imóvel de menor valor, veículo, terreno...">
+          </div>
+          <div class="grid" id="parcRuralWrap" style="display:none;grid-column:span 12;gap:18px 20px">
+            <div class="section-label">Parcelamento direto — condições <span class="crm-tag">Rural</span></div>
+            <div class="field third">
+              <label>Valor da entrada</label>
+              <div class="prefix"><span class="pf">R$</span><input type="text" name="parc_entrada" data-mask="moeda" placeholder="0"></div>
+            </div>
+            <div class="field third">
+              <label>Número de parcelas</label>
+              <input type="text" name="parc_num" data-mask="numero" placeholder="Ex.: 10">
+            </div>
+            <div class="field third">
+              <label>Periodicidade das parcelas</label>
+              <select name="parc_period"><option value="">Selecione</option><option>Semestral</option><option>Anual</option></select>
+            </div>
+            <div class="field">
+              <label>Indexação / correção das parcelas</label>
+              <select name="parc_index" id="parcIndex">
+                <option value="">Selecione</option>
+                <optgroup label="Indicadores econômicos">
+                  <option>IPCA</option><option>IGP-M</option><option>INCC</option><option>CDI</option><option>Dólar (US$)</option>
+                </optgroup>
+                <optgroup label="Commodities agrícolas">
+                  <option>Saca de soja</option><option>Saca de milho</option><option>Saca de algodão</option><option>Tonelada de grãos</option><option>Outro grão / índice</option>
+                </optgroup>
+              </select>
+            </div>
+            <div class="field" id="parcIndexOutroWrap" style="display:none">
+              <label>Especifique o grão / índice</label>
+              <input type="text" name="parc_index_outro" placeholder="Ex.: saca de sorgo, arroba do boi...">
+            </div>
+          </div>
+
+          <div class="section-label">Urgência e flexibilidade <span class="crm-tag">CRM</span></div>
+          <div class="field">
+            <label>Há urgência na venda?<span class="req">*</span></label>
+            <div class="choices" data-radio="urgencia">
+              <label class="pill"><input type="radio" name="urgencia" value="Sim, urgente" required><span class="dot"></span>Sim, urgente</label>
+              <label class="pill"><input type="radio" name="urgencia" value="Sem pressa"><span class="dot"></span>Sem pressa</label>
+            </div>
+            <div class="err-msg" style="display:none">Selecione uma opção.</div>
+          </div>
+          <div class="field">
+            <label>Abertura para negociação no valor</label>
+            <div class="choices" data-radio="negocia">
+              <label class="pill"><input type="radio" name="negocia" value="Sim"><span class="dot"></span>Sim</label>
+              <label class="pill"><input type="radio" name="negocia" value="Pouca"><span class="dot"></span>Pouca margem</label>
+              <label class="pill"><input type="radio" name="negocia" value="Não"><span class="dot"></span>Valor fechado</label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ETAPA 6 — DIVULGAÇÃO / AUTORIZAÇÕES -->
+      <section class="step" data-step="5">
+        <div class="grid">
+          <div class="section-label">Autorização de divulgação</div>
+          <div class="field">
+            <label>Autoriza anunciar o imóvel?<span class="req">*</span></label>
+            <div class="choices" data-radio="anunciar">
+              <label class="pill"><input type="radio" name="anunciar" value="Sim" required><span class="dot"></span>Sim, pode anunciar</label>
+              <label class="pill"><input type="radio" name="anunciar" value="Não"><span class="dot"></span>Não</label>
+            </div>
+            <div class="err-msg" style="display:none">Selecione uma opção.</div>
+          </div>
+          <div class="field">
+            <label>Autoriza placa / faixa no imóvel?<span class="req">*</span></label>
+            <div class="choices" data-radio="placa">
+              <label class="pill"><input type="radio" name="placa" value="Sim" required><span class="dot"></span>Sim</label>
+              <label class="pill"><input type="radio" name="placa" value="Não"><span class="dot"></span>Não</label>
+            </div>
+            <div class="err-msg" style="display:none">Selecione uma opção.</div>
+          </div>
+          <div class="field">
+            <label>A placa / faixa já está colocada?</label>
+            <div class="choices" data-radio="placa_col">
+              <label class="pill"><input type="radio" name="placa_col" value="Sim"><span class="dot"></span>Sim</label>
+              <label class="pill"><input type="radio" name="placa_col" value="Não"><span class="dot"></span>Ainda não</label>
+            </div>
+          </div>
+          <div class="field">
+            <label>Autoriza visitas acompanhadas pela Mude?</label>
+            <div class="choices" data-radio="visitas">
+              <label class="pill"><input type="radio" name="visitas" value="Sim"><span class="dot"></span>Sim</label>
+              <label class="pill"><input type="radio" name="visitas" value="Mediante agendamento"><span class="dot"></span>Mediante agendamento</label>
+            </div>
+          </div>
+          <div class="field" id="visitaContatoWrap" style="display:none">
+            <label>Quem devemos procurar?</label>
+            <input type="text" name="visita_contato" placeholder="Nome do responsável pela visita">
+          </div>
+          <div class="field" id="visitaFoneWrap" style="display:none">
+            <label>Telefone de contato</label>
+            <input type="tel" name="visita_fone" placeholder="(67) 99999-9999" data-mask="fone">
+          </div>
+
+          <div class="section-label">Modalidade da autorização</div>
+          <div class="field full">
+            <label>Tipo de autorização<span class="req">*</span>
+              <span class="hint">Na exclusividade, conforme o art. 726 do Código Civil, a comissão é devida ainda que a venda ocorra diretamente entre as partes.</span></label>
+            <div class="choices col" data-radio="exclusividade">
+              <label class="pill" style="width:100%"><input type="radio" name="exclusividade" value="Com exclusividade" required><span class="dot"></span><b style="font-weight:500">Com exclusividade</b>&nbsp;— maior dedicação, investimento em mídia e prioridade comercial</label>
+              <label class="pill" style="width:100%"><input type="radio" name="exclusividade" value="Sem exclusividade"><span class="dot"></span>Sem exclusividade</label>
+            </div>
+            <div class="err-msg" style="display:none">Selecione a modalidade.</div>
+          </div>
+          <div class="field" id="prazoWrap" style="display:none">
+            <label>Prazo de vigência da autorização</label>
+            <select name="prazo">
+              <option>30 dias</option><option>60 dias</option><option selected>180 dias</option><option>365 dias</option><option>Até vender</option>
+            </select>
+          </div>
+          <div class="note full">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4z"/></svg>
+            <span>Prazo prorrogável por igual período, sucessivamente, salvo manifestação por escrito de qualquer das partes. (Decreto 81.871/78 e Resolução COFECI 1.404/2018)</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ETAPA 7 — DOCUMENTAÇÃO -->
+      <section class="step" data-step="6">
+        <div class="grid">
+          <div class="section-label">Situação documental <span class="crm-tag">CRM</span></div>
+          <div class="field">
+            <label>Situação da Escritura <span class="hint">Opcional</span></label>
+            <select name="situacao_escritura">
+              <option value="">Selecione</option>
+              <option>Contrato sem procuração</option>
+              <option>Contrato com procuração</option>
+              <option>Alienada</option>
+              <option>Definitiva</option>
+              <option>Inventário</option>
+              <option>Laudêmio</option>
+              <option>Posse</option>
+              <option>Regularizando</option>
+              <option>Sem averbação da Construtora</option>
+              <option>Sem Escritura</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>A escritura/matrícula já está em nome do(s) proprietário(s)?<span class="req">*</span></label>
+            <div class="choices" data-radio="escritura">
+              <label class="pill"><input type="radio" name="escritura" value="Sim" required><span class="dot"></span>Sim</label>
+              <label class="pill"><input type="radio" name="escritura" value="Não"><span class="dot"></span>Não</label>
+            </div>
+            <div class="err-msg" style="display:none">Selecione uma opção.</div>
+          </div>
+          <div class="field">
+            <label>O imóvel possui financiamento / ônus ativo?</label>
+            <div class="choices" data-radio="onus">
+              <label class="pill"><input type="radio" name="onus" value="Não"><span class="dot"></span>Não, livre e desembaraçado</label>
+              <label class="pill"><input type="radio" name="onus" value="Sim"><span class="dot"></span>Sim</label>
+            </div>
+          </div>
+          <div class="field full" id="docSitWrap" style="display:none">
+            <label>Descreva a situação da documentação</label>
+            <textarea name="doc_situacao" placeholder="Ex.: imóvel em processo de inventário; contrato de gaveta; aguardando averbação de construção; financiamento com saldo devedor de R$..."></textarea>
+          </div>
+          <div class="field full">
+            <label>O imóvel está ocupado?<span class="req">*</span></label>
+            <div class="choices" data-radio="ocupacao">
+              <label class="pill"><input type="radio" name="ocupacao" value="Desocupado" required><span class="dot"></span>Desocupado</label>
+              <label class="pill"><input type="radio" name="ocupacao" value="Ocupado com Proprietário"><span class="dot"></span>Ocupado com Proprietário</label>
+              <label class="pill"><input type="radio" name="ocupacao" value="Ocupado com Inquilino"><span class="dot"></span>Ocupado com Inquilino</label>
+              <label class="pill"><input type="radio" name="ocupacao" value="Ocupado (outros)"><span class="dot"></span>Ocupado (outros)</label>
+            </div>
+            <div class="err-msg" style="display:none">Selecione a situação de ocupação.</div>
+          </div>
+          <div class="field" id="prazoDesocWrap" style="display:none">
+            <label>Prazo de desocupação em caso de venda</label>
+            <select name="prazo_desoc" id="prazoDesoc">
+              <option value="">Selecione</option>
+              <option>Imediato</option><option>30 dias</option><option>60 dias</option><option>90 dias</option><option>Outra data</option>
+            </select>
+          </div>
+          <div class="field" id="prazoMesesWrap" style="display:none">
+            <label>Quantos meses serão necessários?</label>
+            <input type="text" name="prazo_meses" placeholder="Ex.: 6 meses" data-mask="numero">
+          </div>
+          <div class="field full" id="notifWrap" style="display:none">
+            <label>O inquilino/ocupante já foi notificado por escrito sobre a venda?</label>
+            <div class="choices" data-radio="notificado">
+              <label class="pill"><input type="radio" name="notificado" value="Sim"><span class="dot"></span>Sim, notificado por escrito</label>
+              <label class="pill"><input type="radio" name="notificado" value="Não"><span class="dot"></span>Ainda não</label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ETAPA 8 — DECLARAÇÃO / LGPD / ASSINATURA -->
+      <section class="step" data-step="7">
+        <div class="grid">
+          <div class="section-label">Declaração e termo de autorização</div>
+          <div class="legal-box full">
+            <h4>Termo de Autorização e Contrato de Intermediação Imobiliária</h4>
+            <p>Pelo presente instrumento, o(s) proprietário(s) acima qualificado(s) <strong>AUTORIZA(M)</strong> a <strong>MRM Negócios e Consultorias Imobiliárias Ltda. — Mude Imóveis</strong>, inscrita no <strong>CRECI/MS nº 6052-J</strong>, a promover a <strong>intermediação da venda</strong> do imóvel descrito neste documento, declarando ser legítimo possuidor e proprietário do bem, responsabilizando-se pelas condições aqui especificadas.</p>
+            <p>O(s) proprietário(s) autoriza(m) ainda a <strong>divulgação do imóvel</strong> por meio de internet, portais, redes sociais, jornais, fotos, placas, faixas e demais meios de comunicação para fins comerciais, pela Mude Imóveis e seus corretores credenciados, desde que utilizando a identificação da imobiliária.</p>
+            <p>A comissão de intermediação fica ajustada em <strong>5% (cinco por cento)</strong> sobre o valor efetivamente negociado, devida nos termos dos <strong>arts. 722 a 729 do Código Civil</strong>.</p>
+            <p class="ref">Fundamentos: Lei 6.530/78 · Decreto 81.871/78, art. 5º · Resolução COFECI 005/78 · Resolução COFECI 1.404/2018 · Código Civil, arts. 722–729 · Modelo CRECI-MS.</p>
+          </div>
+
+          <div class="section-label">Consentimentos</div>
+          <div class="full">
+            <label class="consent" data-consent>
+              <input type="checkbox" name="aceite_termo" required><span class="box"></span>
+              <span class="txt"><b>Autorizo a venda e a divulgação</b> do imóvel pela Mude Imóveis, nas condições descritas neste termo, declarando que as informações prestadas são verdadeiras.</span>
+            </label>
+            <label class="consent" data-consent>
+              <input type="checkbox" name="aceite_lgpd" required><span class="box"></span>
+              <span class="txt"><b>Consinto, conforme a LGPD (Lei 13.709/2018)</b>, com o tratamento dos meus dados pessoais pela Mude Imóveis para fins de intermediação imobiliária, divulgação do imóvel e contato comercial.</span>
+            </label>
+            <div class="err-msg" id="consentErr">É necessário aceitar ambos os termos para concluir.</div>
+          </div>
+
+          <div class="section-label">Autorização Eletrônica</div>
+          <div class="field full">
+            <div class="legal-box">
+              <h4>Declaração de Autorização Eletrônica</h4>
+              <p>Declaro que <strong>autorizo a venda e a divulgação</strong> do imóvel descrito neste documento, manifestando minha vontade de forma eletrônica e reconhecendo a validade e a veracidade desta autorização, que dispensa assinatura manuscrita.</p>
+              <p>Para fins de comprovação da manifestação de vontade, <strong>autorizo o registro da origem do meu acesso</strong> — data, hora, endereço IP e dispositivo utilizado — como evidência desta autorização, nos termos do art. 10 do Marco Civil da Internet (Lei 12.965/2014) e do art. 441 do Código de Processo Civil.</p>
+              <p class="ref">Registro de acesso capturado neste preenchimento:</p>
+              <div id="acessoBox" style="font-size:12px;color:var(--grafite);background:var(--branco);border:1px solid var(--linha-forte);border-radius:8px;padding:10px 12px;margin-top:4px;line-height:1.8"></div>
+            </div>
+            <label class="consent" data-consent style="margin-top:14px">
+              <input type="checkbox" name="aceite_decl"><span class="box"></span>
+              <span class="txt"><b>Li e concordo com a Declaração de Autorização Eletrônica acima</b>, confirmo a veracidade das informações prestadas e autorizo o registro da origem do meu acesso.</span>
+            </label>
+            <div class="err-msg" id="declErr">É necessário aceitar a Declaração de Autorização Eletrônica para concluir.</div>
+          </div>
+
+          <div class="section-label">Confirmação</div>
+          <div class="field">
+            <label>Local</label>
+            <input type="text" name="local_assin" value="Dourados — MS">
+          </div>
+          <div class="field third">
+            <label>Data da autorização<span class="req">*</span></label>
+            <input type="date" name="data_assin" required>
+            <div class="err-msg">Informe a data.</div>
+          </div>
+          <div class="field third">
+            <label>Validade</label>
+            <input type="text" id="validadeField" value="180 dias (prorrogável)" readonly style="color:var(--cinza)">
+          </div>
+          <div class="note full">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4z"/></svg>
+            <span>Autorização registrada eletronicamente, com validade jurídica amparada pela manifestação de vontade e pelo registro de acesso. Recomenda-se o arquivamento por, no mínimo, 1 ano após o término da vigência (Resolução COFECI 459/95). A validação jurídica final está sujeita à orientação do advogado da empresa.</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- RESUMO -->
+      <div class="summary" id="summary"></div>
+
+      <!-- NAV -->
+      <div class="nav" id="formNav">
+        <button type="button" class="btn btn-ghost hidden" id="btnBack">← Voltar</button>
+        <button type="button" class="btn btn-primary" id="btnNext">Continuar
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+
+      </form>
+    </div>
+  </div>
+
+  <footer class="inst">
+    <b>MRM Negócios e Consultorias Imobiliárias Ltda.</b> — Mude Imóveis
+    <span class="divider-dot">◆</span> Dourados — MS
+    <span class="divider-dot">◆</span> CRECI/MS 6052-J<br>
+    Imóvel de Alto Padrão tem nome e sobrenome: Mude Imóveis.
+  </footer>
+
+</div>
+
+<script>
+/* ============ ÍCONES ============ */
+const I = {
+  user:'<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+  home:'<path d="M3 9.5L12 3l9 6.5"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/>',
+  pin:'<path d="M12 21s-7-5.7-7-11a7 7 0 0 1 14 0c0 5.3-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>',
+  list:'<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
+  tag:'<path d="M20 12l-8.5 8.5a2 2 0 0 1-2.8 0L3 14.8V4h10.8L20 10.2a2 2 0 0 1 0 1.8z"/><circle cx="8" cy="9" r="1.3"/>',
+  mega:'<path d="M3 11l14-6v14L3 13v-2z"/><path d="M3 11v2"/><path d="M8 13v4a2 2 0 0 0 4 0"/>',
+  doc:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h6"/>',
+  seal:'<circle cx="12" cy="9" r="6"/><path d="M9 14l-1 7 4-2 4 2-1-7"/>',
+  bldg:'<path d="M3 21h18M5 21V5a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v16M14 21V9h4a1 1 0 0 1 1 1v11"/><path d="M8 7h2M8 11h2M8 15h2"/>',
+  land:'<path d="M3 20h18M4 20l4-9 4 5 3-4 5 8"/>',
+  store:'<path d="M3 9l1.5-5h15L21 9M4 9h16v11H4zM9 20v-6h6v6"/>',
+  farm:'<path d="M3 21V10l6-4 6 4v11M9 21v-5h2v5M15 14h6v7h-6z"/><path d="M18 14v-3"/>',
+  fish:'<path d="M3 12c4-6 11-6 15 0-4 6-11 6-15 0z"/><circle cx="9" cy="12" r="1"/><path d="M18 9c2 1 3 3 3 3s-1 2-3 3"/>',
+  tree:'<path d="M12 22v-6M8 16a4 4 0 0 1-1-8 5 5 0 0 1 10 0 4 4 0 0 1-1 8z"/>',
+  office:'<rect x="4" y="3" width="16" height="18" rx="1"/><path d="M9 7h2M13 7h2M9 11h2M13 11h2M9 15h2M13 15h2"/>',
+  shop:'<path d="M6 2L4 6v2a2 2 0 0 0 4 0 2 2 0 0 0 4 0 2 2 0 0 0 4 0 2 2 0 0 0 4 0V6l-2-4z"/><path d="M5 12v8h14v-8"/>'
+};
+const svg=p=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6">'+p+'</svg>';
+
+/* ============ TIPOS DE IMÓVEL ============ */
+const TIPOS=[
+  {id:'casa',nome:'Casa',sub:'Residencial',icon:I.home},
+  {id:'apartamento',nome:'Apartamento',sub:'Residencial',icon:I.bldg},
+  {id:'terreno',nome:'Terreno / Lote',sub:'Urbano',icon:I.land},
+  {id:'comercial',nome:'Imóvel Comercial',sub:'Prédio/Loja',icon:I.store},
+  {id:'sala',nome:'Sala Comercial',sub:'Escritório',icon:I.office},
+  {id:'ponto',nome:'Ponto Comercial',sub:'Fundo de comércio',icon:I.shop},
+  {id:'sitio',nome:'Sítio',sub:'Rural',icon:I.tree},
+  {id:'chacara',nome:'Chácara',sub:'Lazer/Rural',icon:I.tree},
+  {id:'pesqueiro',nome:'Pesqueiro',sub:'Comercial/Rural',icon:I.fish},
+  {id:'fazenda',nome:'Fazenda',sub:'Produção rural',icon:I.farm}
+];
+
+/* ============ CAMPOS DINÂMICOS POR TIPO ============ */
+const num=(n,l,p,sz='third')=>`<div class="field ${sz}"><label>${l}</label><input type="text" name="${n}" placeholder="${p||''}"></div>`;
+const sel=(n,l,opts,sz='third')=>`<div class="field ${sz}"><label>${l}</label><select name="${n}">${opts.map(o=>`<option>${o}</option>`).join('')}</select></div>`;
+const amen=(name,items)=>`<div class="field full"><label>Diferenciais e comodidades</label><div class="amen" data-check="${name}">${items.map(i=>`<label class="pill check"><input type="checkbox" value="${i}"><span class="dot"></span>${i}</label>`).join('')}</div></div>`;
+const sec=t=>`<div class="section-label">${t}</div>`;
+const wrap=h=>`<div class="grid">${h}</div>`;
+
+const padraoOpts=['Selecione','Popular','Médio padrão','Alto padrão','Super alto padrão','Luxo'];
+
+const DYN={
+  casa:()=>wrap(
+    sec('Medidas e composição')+
+    num('area_terreno','Área do terreno (m²)','360')+num('area_const','Área construída (m²)','245')+num('ano','Ano de construção','')+
+    num('quartos','Quartos','3')+num('suites','Suítes','2')+num('banheiros','Banheiros','3')+
+    num('vagas','Vagas de garagem','2')+sel('padrao','Padrão construtivo',padraoOpts)+sel('mobiliado','Mobiliado',['Selecione','Não','Semimobiliado','Mobiliado'])+
+    amen('amen',['Suíte master','Closet','Piscina','Churrasqueira','Área gourmet','Ar-condicionado','Armários embutidos','Aquecimento solar','Energia solar','Hidromassagem','Home theater','Adega','Jardim','Lavabo','Escritório','Portão eletrônico','Alarme/segurança','Quintal amplo'])
+  ),
+  apartamento:()=>wrap(
+    sec('Medidas e composição')+
+    num('area_util','Área útil (m²)','120')+num('area_total','Área total (m²)','150')+num('andar','Andar','')+
+    num('quartos','Quartos','3')+num('suites','Suítes','1')+num('vagas','Vagas','2')+
+    num('cond','Valor do condomínio (R$)','')+num('andares','Andares do edifício','')+sel('mobiliado','Mobiliado',['Selecione','Não','Semimobiliado','Mobiliado'])+
+    amen('amen',['Elevador','Varanda gourmet','Sacada','Ar-condicionado','Armários embutidos','Lazer completo','Academia','Piscina','Salão de festas','Portaria 24h','Playground','Adega','Hidromassagem','2 por andar','Nascente/sol da manhã','Andar alto'])
+  ),
+  terreno:()=>wrap(
+    sec('Dimensões e características')+
+    num('area','Área do terreno (m²)','450')+num('frente','Frente (m)','15')+num('fundo','Fundo (m)','30')+
+    sel('topografia','Topografia',['Selecione','Plano','Aclive','Declive','Irregular'])+sel('esquina','Posição',['Selecione','Meio de quadra','Esquina'])+sel('murado','Murado',['Selecione','Sim','Não','Parcial'])+
+    sel('zona','Zoneamento',['Selecione','Residencial','Comercial','Misto','Industrial','Rural'])+sel('condominio','Em condomínio fechado?',['Selecione','Não','Sim'])+num('cond','Valor do condomínio (R$)','')+
+    amen('amen',['Pronto para construir','Documentação ok','Aterrado','Água/esgoto','Energia na rua','Próximo a área nobre'])
+  ),
+  comercial:()=>wrap(
+    sec('Estrutura do imóvel comercial')+
+    num('area_terreno','Área do terreno (m²)','')+num('area_const','Área construída (m²)','')+num('pedireito','Pé-direito (m)','')+
+    num('pavimentos','Pavimentos','')+num('banheiros','Banheiros','')+num('vagas','Vagas','')+
+    sel('uso','Uso atual',['Selecione','Desocupado','Loja','Galpão','Escritório','Clínica','Restaurante','Outro'])+num('frente','Frente / fachada (m)','')+sel('mezanino','Mezanino',['Selecione','Não','Sim'])+
+    amen('amen',['Estacionamento próprio','Recepção','Copa','Vitrine','Doca de carga','Alta visibilidade','Esquina','Ar-condicionado'])
+  ),
+  sala:()=>wrap(
+    sec('Características da sala comercial')+
+    num('area_util','Área útil (m²)','')+num('andar','Andar','')+num('vagas','Vagas','')+
+    num('cond','Condomínio (R$)','')+sel('banheiro','Banheiro privativo',['Selecione','Sim','Não'])+sel('divisorias','Divisórias',['Selecione','Sim','Não','Planta livre'])+
+    num('edificio','Edifício / Centro empresarial','')+
+    amen('amen',['Elevador','Ar-condicionado','Recepção do edifício','Segurança 24h','Mobiliada','Vista','Pronta para uso'])
+  ),
+  ponto:()=>wrap(
+    sec('Fundo de comércio')+
+    `<div class="field third"><label>Ramo de atividade</label><input type="text" name="ramo" placeholder="Ex.: Restaurante"></div>`+
+    num('area','Área (m²)','')+num('aluguel','Aluguel atual (R$)','')+
+    num('faturamento','Faturamento médio mensal (R$)','')+sel('contrato','Contrato de locação',['Selecione','Vigente e transferível','A renovar','Imóvel próprio'])+sel('motivo','Inclui ponto e estrutura',['Selecione','Sim','Somente estrutura'])+
+    `<div class="field full"><label>Motivo da venda</label><input type="text" name="motivo_venda" placeholder="Ex.: mudança de cidade, novo negócio..."></div>`+
+    amen('amen',['Equipamentos inclusos','Mobiliário','Clientela formada','Localização de fluxo','Estoque','Funcionários','Licenças em dia'])
+  ),
+  sitio:()=>wrap(
+    sec('Características rurais')+
+    num('area','Área do terreno (m²)','')+num('area_const','Área construída (m²)','')+sel('agua','Água',['Selecione','Poço','Nascente','Rede','Açude','Rio'])+
+    sel('energia','Energia',['Selecione','Sim','Não','Solar'])+num('distancia','Distância da cidade (km)','')+sel('sede','Possui sede/casa',['Selecione','Sim','Não'])+
+    amen('amen',['Casa sede','Pomar','Curral','Poço artesiano','Nascente','Piscina','Pasto formado','Cerca','Galpão','Energia trifásica'])
+  ),
+  chacara:()=>wrap(
+    sec('Características da chácara')+
+    num('area','Área do terreno (m²)','')+num('area_const','Área construída (m²)','')+num('distancia','Distância da cidade (km)','')+
+    sel('agua','Água',['Selecione','Poço','Rede','Nascente','Açude'])+sel('energia','Energia',['Selecione','Sim','Não'])+sel('cond','Em condomínio',['Selecione','Não','Sim'])+
+    amen('amen',['Casa sede','Piscina','Churrasqueira','Campo de futebol','Pomar','Poço','Lago/açude','Área de lazer','Quiosque'])
+  ),
+  pesqueiro:()=>wrap(
+    sec('Estrutura do pesqueiro')+
+    num('area','Área do terreno (m²)','')+num('tanques','Nº de tanques / açudes','')+num('faturamento','Faturamento médio (R$)','')+
+    `<div class="field third"><label>Espécies</label><input type="text" name="especies" placeholder="Ex.: tilápia, pacu, tambaqui"></div>`+
+    sel('licenca','Licença ambiental',['Selecione','Regularizada','Em processo','A regularizar'])+num('capacidade','Capacidade (pessoas)','')+
+    amen('amen',['Restaurante','Quiosques','Camping','Estacionamento','Casa sede','Energia','Píer','Bar','Cozinha industrial','Banheiros'])
+  ),
+  fazenda:()=>wrap(
+    sec('Dimensões e produção')+
+    num('area','Área total (hectares)','500')+sel('unidade','Unidade de medida',['Hectares','Alqueires','Metros²'])+num('municipio','Município','Dourados')+
+    num('pastagem','Pastagem (ha)','')+num('lavoura','Lavoura (ha)','')+num('reserva','Reserva legal (ha)','')+
+    num('cabecas','Capacidade (cabeças)','')+sel('georef','Georreferenciada / CAR',['Selecione','Sim','Não','Em processo'])+num('distancia','Distância / acesso (km)','')+
+    amen('amen',['Sede','Casa de funcionários','Curral','Tronco/balança','Açudes','Rio/córrego','Energia trifásica','Galpão','Barracão','Pasto formado','Cerca','Estradas internas'])
+  )
+};
+
+/* ============ FINALIDADE DINÂMICA POR TIPO ============ */
+const FIN_PILLS={
+  casa:['Moradia','Investidor','Gera renda / locado','Desocupado'],
+  apartamento:['Moradia','Investidor','Gera renda / locado','Desocupado'],
+  terreno:['Residencial','Uso misto','Só Comercial','Gabarito Livre (edifícios)'],
+  comercial:['Ocupado pelo Proprietário','Locado','Fechado'],
+  sala:['Ocupado pelo Proprietário','Locado','Fechado'],
+  ponto:['Ocupado pelo Proprietário','Locado','Fechado'],
+  sitio:['Segunda Moradia','Lazer','Para Locação','Sem Estrutura'],
+  chacara:['Segunda Moradia','Lazer','Para Locação','Sem Estrutura'],
+  pesqueiro:['Segunda Moradia','Lazer','Para Locação','Sem Estrutura']
+};
+const FIN_LABELS={casa:'Finalidade declarada pelo proprietário',apartamento:'Finalidade declarada pelo proprietário',terreno:'Finalidade / uso pretendido',comercial:'Situação de uso',sala:'Situação de uso',ponto:'Situação de uso',sitio:'Finalidade',chacara:'Finalidade',pesqueiro:'Finalidade',fazenda:'Aptidão'};
+const FAZENDA_APT=['Pecuária','Agricultura / Lavoura','Dupla aptidão','Integração lavoura-pecuária','Irrigação / Pivô','Confinamento','Silvicultura','Haras','Turismo / Lazer','Investimento'];
+function renderFinalidade(id){
+  const wrap=$('#finalidadeWrap'),ch=$('#finalidadeChoices'),lbl=$('#finalidadeLabel'),extra=$('#finalidadeExtra');
+  extra.innerHTML='';
+  lbl.textContent=FIN_LABELS[id]||'Finalidade declarada pelo proprietário';
+  if(id==='fazenda'){
+    ch.removeAttribute('data-radio');
+    ch.innerHTML='<select name="finalidade" style="max-width:360px"><option value="">Selecione a aptidão</option>'+FAZENDA_APT.map(o=>`<option>${o}</option>`).join('')+'</select>';
+  }else{
+    ch.setAttribute('data-radio','finalidade');
+    ch.innerHTML=(FIN_PILLS[id]||[]).map(o=>`<label class="pill"><input type="radio" name="finalidade" value="${o}"><span class="dot"></span>${o}</label>`).join('');
+  }
+  wrap.style.display='flex';
+  bindPills();
+  $$('[name=finalidade]').forEach(el=>el.addEventListener('change',()=>renderFinalidadeExtra(id)));
+}
+function finalidadeAtual(){const r=$('input[name=finalidade]:checked');if(r)return r.value;const s=$('select[name=finalidade]');return s?s.value:'';}
+function renderFinalidadeExtra(id){
+  const extra=$('#finalidadeExtra');const v=finalidadeAtual();let h='';
+  if((id==='casa'||id==='apartamento')&&v==='Gera renda / locado'){
+    h=`<div class="field third"><label>Valor do aluguel bruto atual</label><div class="prefix"><span class="pf">R$</span><input type="text" name="aluguel_bruto" placeholder="0" data-mask="moeda"></div></div>`;
+  }else if((id==='comercial'||id==='sala'||id==='ponto')&&v==='Locado'){
+    h=`<div class="field third"><label>Valor da locação atual</label><div class="prefix"><span class="pf">R$</span><input type="text" name="locacao_valor" placeholder="0" data-mask="moeda"></div></div>`+
+      `<div class="field third"><label>Tempo de contrato restante</label><input type="text" name="contrato_restante" placeholder="Ex.: 14 meses"></div>`+
+      `<div class="field third"><label>Prazo de desocupação</label><select name="desoc_comercial"><option value="">Selecione</option><option>Imediato</option><option>30 dias</option><option>60 dias</option><option>90 dias</option><option>Fim do contrato</option></select></div>`;
+  }
+  extra.innerHTML=h;
+  $$('#finalidadeExtra [data-mask]').forEach(mask);
+}
+
+/* ============ IMÓVEL RURAL ============ */
+const RURAL=['sitio','chacara','pesqueiro','fazenda'];
+function isRural(){return RURAL.includes($('input[name=tipo]').value);}
+function renderCondicao(type){
+  const ch=$('#condicaoChoices'),lbl=$('#condicaoLabel');if(!ch)return;
+  if(RURAL.includes(type)){
+    lbl.innerHTML='Localização<span class="req">*</span>';
+    ch.innerHTML='<label class="pill"><input type="radio" name="condicao" value="Dentro do Perímetro Urbano" required><span class="dot"></span>Dentro do Perímetro Urbano</label>'+
+                 '<label class="pill"><input type="radio" name="condicao" value="Zona Rural"><span class="dot"></span>Zona Rural</label>';
+  }else{
+    lbl.innerHTML='Condição do imóvel<span class="req">*</span>';
+    ch.innerHTML='<label class="pill"><input type="radio" name="condicao" value="Novo" required><span class="dot"></span>Novo</label>'+
+                 '<label class="pill"><input type="radio" name="condicao" value="Usado"><span class="dot"></span>Usado</label>';
+  }
+  bindPills();
+}
+function toggleRural(type){
+  const r=RURAL.includes(type);
+  $$('.rural-only').forEach(e=>e.style.display=r?'':'none');
+  const el=$('#endLabel');if(el)el.textContent=r?'Endereço do proprietário / escritório (na cidade)':'Endereço do imóvel';
+}
+function adjustComissao(type){
+  const ci=$('#comissaoInput'),lbl=$('#comissaoLabel');if(!ci)return;
+  if(type==='fazenda'){
+    ci.readOnly=false;ci.value='';ci.placeholder='Informe a comissão acordada (ex.: 6%)';ci.style.color='var(--preto-suave)';
+    lbl.innerHTML='Comissão de intermediação (negociável)<span class="req">*</span>';
+  }else{
+    ci.readOnly=true;ci.value='5% sobre o valor efetivamente vendido';ci.style.color='var(--cinza)';
+    lbl.innerHTML='Comissão de intermediação<span class="req">*</span>';
+  }
+}
+
+/* ============ ESTADO / NAVEGAÇÃO ============ */
+const STEPS=[
+  {t:'Identificação do Proprietário',s:'Quem está autorizando a venda',i:I.user,k:'Proprietário'},
+  {t:'Corretor & Tipo de Imóvel',s:'Atendimento e categoria do bem',i:I.tag,k:'Imóvel'},
+  {t:'Localização do Imóvel',s:'Endereço e registro',i:I.pin,k:'Local'},
+  {t:'Características do Imóvel',s:'Medidas, composição e diferenciais',i:I.list,k:'Detalhes'},
+  {t:'Condições Comerciais',s:'Valor, pagamento e negociação',i:I.tag,k:'Comercial'},
+  {t:'Divulgação & Autorizações',s:'Anúncio, placa e exclusividade',i:I.mega,k:'Divulgação'},
+  {t:'Documentação',s:'Situação jurídica do imóvel',i:I.doc,k:'Documentos'},
+  {t:'Declaração & Assinatura',s:'Termo, LGPD e formalização',i:I.seal,k:'Assinatura'}
+];
+let cur=0;
+const $=s=>document.querySelector(s);
+const $$=s=>[...document.querySelectorAll(s)];
+
+/* stepper */
+const stepperEl=$('#stepper');
+STEPS.forEach((s,idx)=>{
+  const d=document.createElement('div');
+  d.className='st'+(idx===0?' active':'');
+  d.innerHTML=`<span class="n">${idx+1}</span>${s.k}`;
+  d.onclick=()=>{ if(idx<cur) goTo(idx); };
+  stepperEl.appendChild(d);
+});
+
+/* tipo cards */
+const typesEl=$('#types');
+TIPOS.forEach(t=>{
+  const c=document.createElement('div');
+  c.className='type-card';c.dataset.tipo=t.id;
+  c.innerHTML=`${svg(t.icon)}<div class="tname">${t.nome}</div><div class="tsub">${t.sub}</div>`;
+  c.onclick=()=>{
+    $$('.type-card').forEach(x=>x.classList.remove('sel'));
+    c.classList.add('sel');
+    $('input[name=tipo]').value=t.id;
+    $('#tipoErr').style.display='none';
+    renderDyn(t.id,t.nome);
+    renderFinalidade(t.id);
+    renderCondicao(t.id);
+    toggleRural(t.id);
+    adjustComissao(t.id);
+    condicionais();
+  };
+  typesEl.appendChild(c);
+});
+function renderDyn(id,nome){
+  $('#caractTitle').innerHTML=`Características — ${nome}`;
+  $('#dynamicFields').innerHTML=DYN[id]?DYN[id]():'';
+  bindPills();
+}
+
+/* ============ PILLS (radio/check) — binding por evento change ============ */
+function bindPills(){
+  $$('.pill input,.consent input').forEach(inp=>{
+    if(inp._b)return;inp._b=1;
+    inp.addEventListener('change',()=>{
+      if(inp.type==='radio'){
+        $$('input[name="'+inp.name+'"]').forEach(r=>{const w=r.closest('.pill,.consent');if(w)w.classList.toggle('sel',r.checked);});
+      }else{
+        const w=inp.closest('.pill,.consent');if(w)w.classList.toggle('sel',inp.checked);
+      }
+      const em=inp.closest('.field')?.querySelector('.err-msg');if(em)em.style.display='none';
+      const ce=$('#consentErr');if(ce)ce.style.display='none';
+      condicionais();
+    });
+  });
+}
+bindPills();
+
+/* condicionais (mostrar/ocultar) */
+function show(id,on){const e=$('#'+id);if(e)e.style.display=on?(e.classList.contains('grid')?'grid':'flex'):'none';}
+function condicionais(){
+  // prazo de autorização (com OU sem exclusividade)
+  const exc=$('input[name=exclusividade]:checked');
+  show('prazoWrap',!!exc);
+  const prazoSel=$('select[name=prazo]'),vf=$('#validadeField');
+  if(vf&&prazoSel)vf.value=(prazoSel.value==='Até vender')?'Até vender (prorrogável)':prazoSel.value+' (prorrogável)';
+  // documentação
+  const esc=$('input[name=escritura]:checked');
+  let docSit=(esc&&esc.value==='Não');
+  const onus=$('input[name=onus]:checked');
+  if(onus&&onus.value==='Sim')docSit=true;
+  show('docSitWrap',docSit);
+  // permuta
+  show('permutaWrap',[...$$('[data-check=pagamento] input')].some(i=>i.value==='Permuta'&&i.checked));
+  // parcelamento direto rural
+  const parcCk=[...$$('[data-check=pagamento] input')].some(i=>i.value==='Parcelamento direto'&&i.checked);
+  show('parcRuralWrap',isRural()&&parcCk);
+  const pi=$('#parcIndex');
+  show('parcIndexOutroWrap',isRural()&&parcCk&&pi&&pi.value==='Outro grão / índice');
+  // condomínio fechado
+  const emc=$('input[name=emcond]:checked');const showCond=(emc&&emc.value==='Sim');
+  show('condWrap',showCond);
+  const cs=$('#condSelect');
+  show('condOutroWrap',showCond&&cs&&cs.value==='Outro (não listado)');
+  // visitas mediante agendamento
+  const vis=$('input[name=visitas]:checked');const ag=(vis&&vis.value==='Mediante agendamento');
+  show('visitaContatoWrap',ag);show('visitaFoneWrap',ag);
+  // ocupação
+  const oc=$('input[name=ocupacao]:checked');
+  const ocupado=oc&&oc.value!=='Desocupado'&&oc.value!==undefined&&oc.value!=='';
+  const isOcup=oc&&['Ocupado com Proprietário','Ocupado com Inquilino','Ocupado (outros)'].includes(oc.value);
+  show('prazoDesocWrap',isOcup);
+  const pd=$('#prazoDesoc');
+  show('prazoMesesWrap',isOcup&&pd&&pd.value==='Outra data');
+  show('notifWrap',oc&&(oc.value==='Ocupado com Inquilino'||oc.value==='Ocupado (outros)'));
+}
+['condSelect','prazoDesoc','parcIndex'].forEach(id=>{const e=$('#'+id);if(e)e.addEventListener('change',condicionais);});
+const prazoSelEl=$('select[name=prazo]');if(prazoSelEl)prazoSelEl.addEventListener('change',condicionais);
+
+/* ============ MÁSCARAS ============ */
+function fmtCPF(v){return v.slice(0,11).replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})$/,'$1-$2');}
+function fmtCNPJ(v){return v.slice(0,14).replace(/^(\d{2})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1/$2').replace(/(\d{4})(\d)/,'$1-$2');}
+function mask(el){
+  const t=el.dataset.mask;
+  el.addEventListener('input',()=>{
+    let v=el.value.replace(/\D/g,'');
+    if(t==='cpfcnpj'){v=(el.dataset.doc==='cnpj')?fmtCNPJ(v):fmtCPF(v);}
+    else if(t==='fone'){v=v.slice(0,11).replace(/^(\d{2})(\d)/,'($1) $2').replace(/(\d{5})(\d)/,'$1-$2');}
+    else if(t==='cep'){v=v.slice(0,8).replace(/(\d{5})(\d)/,'$1-$2');}
+    else if(t==='numero'){v=v.slice(0,4);}
+    else if(t==='moeda'){v=v?parseInt(v,10).toLocaleString('pt-BR'):'';}
+    el.value=v;
+  });
+}
+$$('[data-mask]').forEach(mask);
+
+/* CPF/CNPJ conforme tipo de pessoa */
+const tipoPessoaEl=$('#tipoPessoa'),cpfInput=$('#cpfInput'),cpfLabel=$('#cpfLabel');
+function ajustarDoc(){
+  const pj=tipoPessoaEl.value==='Pessoa Jurídica';
+  cpfInput.dataset.doc=pj?'cnpj':'cpf';
+  cpfInput.placeholder=pj?'00.000.000/0000-00':'000.000.000-00';
+  cpfLabel.innerHTML=(pj?'CNPJ':'CPF')+'<span class="req">*</span>';
+  cpfInput.value='';cpfInput.closest('.field').classList.remove('invalid');
+}
+if(tipoPessoaEl)tipoPessoaEl.addEventListener('change',ajustarDoc);
+
+/* ============ VALIDAÇÃO DE CPF / CNPJ ============ */
+function validaCPF(v){
+  v=(v||'').replace(/\D/g,'');
+  if(v.length!==11||/^(\d)\1{10}$/.test(v))return false;
+  let s=0;for(let i=0;i<9;i++)s+=+v[i]*(10-i);
+  let d1=11-(s%11);if(d1>=10)d1=0;if(d1!==+v[9])return false;
+  s=0;for(let i=0;i<10;i++)s+=+v[i]*(11-i);
+  let d2=11-(s%11);if(d2>=10)d2=0;return d2===+v[10];
+}
+function validaCNPJ(v){
+  v=(v||'').replace(/\D/g,'');
+  if(v.length!==14||/^(\d)\1{13}$/.test(v))return false;
+  const calc=b=>{let n=0,p=b.length-7;for(let i=b.length;i>=1;i--){n+=+b[b.length-i]*p--;if(p<2)p=9;}const r=n%11;return r<2?0:11-r;};
+  if(calc(v.slice(0,12))!==+v[12])return false;
+  return calc(v.slice(0,13))===+v[13];
+}
+function docValido(v){const n=(v||'').replace(/\D/g,'');return n.length<=11?validaCPF(n):validaCNPJ(n);}
+const cpfEl=$('input[name=prop_cpf]');
+if(cpfEl)cpfEl.addEventListener('blur',()=>{
+  const f=cpfEl.closest('.field'),em=f.querySelector('.err-msg');
+  if(cpfEl.value&&!docValido(cpfEl.value)){f.classList.add('invalid');em.textContent='CPF/CNPJ inválido. Confira os números digitados.';}
+  else f.classList.remove('invalid');
+});
+
+/* ============ BUSCA DE ENDEREÇO POR CEP (ViaCEP) ============ */
+const cepEl=$('input[name=cep]');
+if(cepEl)cepEl.addEventListener('blur',async()=>{
+  const c=cepEl.value.replace(/\D/g,'');if(c.length!==8)return;
+  cepEl.closest('.field').classList.remove('invalid');
+  try{
+    const r=await fetch('https://viacep.com.br/ws/'+c+'/json/');
+    const d=await r.json();if(d.erro)return;
+    if(d.logradouro)$('input[name=logradouro]').value=d.logradouro;
+    if(d.bairro)$('input[name=bairro]').value=d.bairro;
+    if(d.localidade)$('input[name=cidade]').value=d.localidade;
+    if(d.uf)$('input[name=uf]').value=d.uf;
+    const nf=$('input[name=numero]');if(nf&&!nf.value)nf.focus();
+  }catch(e){/* offline: preenchimento manual */}
+});
+
+/* ============ REGISTRO DE ORIGEM DO ACESSO ============ */
+let acessoFeito=false;
+async function registrarAcesso(){
+  if(acessoFeito)return;acessoFeito=true;
+  const box=$('#acessoBox');if(!box)return;
+  const agora=new Date().toLocaleString('pt-BR');
+  const disp=navigator.userAgent.split(')')[0].split('(')[1]||navigator.platform||'Dispositivo';
+  box.innerHTML=`<b>Data/hora:</b> ${agora}<br><b>Dispositivo:</b> ${disp}<br><b>Endereço IP:</b> <span id="ipReg">capturando…</span>`;
+  try{
+    const r=await fetch('https://api.ipify.org?format=json');
+    const d=await r.json();const ip=document.getElementById('ipReg');if(ip)ip.textContent=d.ip;
+  }catch(e){const ip=document.getElementById('ipReg');if(ip)ip.textContent='registrado no momento do envio';}
+}
+
+/* ============ NAVEGAÇÃO ============ */
+const headIcon=$('#headIcon'),headTitle=$('#headTitle'),headSub=$('#headSub'),headBadge=$('#headBadge');
+const btnNext=$('#btnNext'),btnBack=$('#btnBack');
+const TOTAL=STEPS.length;
+
+function paint(){
+  $$('.step').forEach(s=>s.classList.toggle('active',+s.dataset.step===cur));
+  $('#summary').classList.remove('active');
+  headIcon.innerHTML=svg(STEPS[cur].i);
+  headTitle.textContent=STEPS[cur].t;
+  headSub.textContent=STEPS[cur].s;
+  headBadge.textContent='Etapa '+(cur+1)+' de '+TOTAL;
+  $$('#stepper .st').forEach((d,i)=>{d.classList.toggle('active',i===cur);d.classList.toggle('done',i<cur);});
+  btnBack.classList.toggle('hidden',cur===0);
+  btnNext.innerHTML=(cur===TOTAL-1)
+    ? 'Revisar autorização <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>'
+    : 'Continuar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+  if(cur===7)registrarAcesso();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function validateStep(){
+  let ok=true;
+  const sct=$('.step[data-step="'+cur+'"]');
+  sct.querySelectorAll('[required]').forEach(el=>{
+    const f=el.closest('.field');
+    if(el.type==='hidden'){ if(!el.value){$('#tipoErr').style.display='block';ok=false;} return;}
+    if(!el.value.trim()){ if(f)f.classList.add('invalid'); ok=false;}
+    else if(f)f.classList.remove('invalid');
+  });
+  const radNames=new Set();
+  sct.querySelectorAll('input[type=radio][required]').forEach(r=>radNames.add(r.name));
+  radNames.forEach(n=>{
+    if(!sct.querySelector('input[name="'+n+'"]:checked')){
+      const em=sct.querySelector('input[name="'+n+'"]').closest('.field').querySelector('.err-msg');
+      if(em)em.style.display='block';ok=false;
+    }
+  });
+  // validação real de CPF/CNPJ na etapa 1
+  if(cur===0){
+    const cf=$('input[name=prop_cpf]'),fld=cf.closest('.field'),em=fld.querySelector('.err-msg');
+    if(cf.value&&!docValido(cf.value)){fld.classList.add('invalid');em.textContent='CPF/CNPJ inválido. Confira os números digitados.';ok=false;}
+  }
+  if(cur===7){
+    const t=$('input[name=aceite_termo]').checked,l=$('input[name=aceite_lgpd]').checked;
+    if(!t||!l){$('#consentErr').style.display='block';ok=false;}
+    if(!$('input[name=aceite_decl]').checked){$('#declErr').style.display='block';ok=false;}
+  }
+  return ok;
+}
+function goTo(i){cur=i;paint();}
+btnBack.onclick=()=>{if(cur>0){cur--;paint();}};
+btnNext.onclick=()=>{
+  if(!validateStep())return;
+  if(cur<TOTAL-1){cur++;paint();}
+  else buildSummary();
+};
+
+/* ============ RESUMO / PAYLOAD CRM ============ */
+function val(n){const e=$('[name="'+n+'"]');return e?e.value:'';}
+function checks(name){return [...$$('[data-check="'+name+'"] input:checked')].map(i=>i.value).join(', ');}
+function radio(n){const e=$('input[name="'+n+'"]:checked');return e?e.value:'—';}
+const CRECI={'Mário Rubens':'CRECI/MS 5710'};
+function corretorLabel(){const c=val('corretor');if(!c)return '';return CRECI[c]?c+' ('+CRECI[c]+')':c;}
+function condominioLabel(){
+  const emc=$('input[name=emcond]:checked');if(!emc||emc.value!=='Sim')return '';
+  const sel=val('condominio_nome');
+  if(sel==='Outro (não listado)')return val('condominio_outro')||'Sim';
+  return sel||'Sim';
+}
+function row(k,v){return v&&v!=='—'&&v!==''?`<div class="sum-row"><div class="k">${k}</div><div class="v">${v}</div></div>`:'';}
+
+function buildSummary(){
+  $$('.step').forEach(s=>s.classList.remove('active'));
+  const sum=$('#summary');sum.classList.add('active');
+  headIcon.innerHTML=svg(I.seal);headTitle.textContent='Revisão da Autorização';
+  headSub.textContent='Confira os dados antes de concluir';headBadge.textContent='Resumo final';
+  $$('#stepper .st').forEach(d=>d.classList.add('done'));
+
+  const tipoNome=(TIPOS.find(t=>t.id===val('tipo'))||{}).nome||'—';
+  const dyn=[...$$('#dynamicFields input, #dynamicFields select')]
+    .filter(e=>e.type!=='checkbox'&&e.value&&e.value!=='Selecione')
+    .map(e=>{const l=e.closest('.field')?.querySelector('label');return l?row(l.textContent.trim(),e.value):'';}).join('');
+  const dynAmen=checks('amen');
+
+  sum.innerHTML=`
+  <div id="fichaContent">
+  <div class="sum-group">
+    <h3>${svg(I.user)} Proprietário</h3>
+    ${row('Nome',val('prop_nome'))}${row('Tipo',val('prop_tipo'))}${row('CPF/CNPJ',val('prop_cpf'))}
+    ${row('Estado civil',val('prop_civil'))}${row('Profissão',val('prop_prof'))}
+    ${row('E-mail',val('prop_email'))}${row('WhatsApp',val('prop_whats'))}
+  </div>
+  <div class="sum-group">
+    <h3>${svg(I.tag)} Imóvel</h3>
+    ${row('Tipo',tipoNome)}${row('Corretor Mude',corretorLabel())}${row('Finalidade / Aptidão',finalidadeAtual()||'—')}
+    ${row('Aluguel bruto atual',val('aluguel_bruto')?'R$ '+val('aluguel_bruto'):'')}
+    ${row('Locação atual',val('locacao_valor')?'R$ '+val('locacao_valor'):'')}${row('Contrato restante',val('contrato_restante'))}${row('Desocupação',val('desoc_comercial'))}
+    ${row('Endereço',[val('logradouro'),val('numero'),val('bairro'),val('cidade')+'/'+val('uf')].filter(Boolean).join(', '))}
+    ${row('CEP',val('cep'))}${row('Condomínio fechado',condominioLabel())}
+    ${row('Referência',val('referencia'))}${row('Matrícula (RI)',val('matricula'))}${row('Cartório',val('cartorio'))}${row('IPTU/ITR',val('iptu'))}
+    ${row('Propriedade rural',val('rural_nome'))}${row('Acesso',val('rural_acesso'))}${row('Google Maps',val('rural_maps'))}${row('Como chegar',val('rural_comochegar'))}
+  </div>
+  <div class="sum-group">
+    <h3>${svg(I.list)} Características</h3>
+    ${row('Condição / Localização',radio('condicao'))}${dyn}${row('Diferenciais',dynAmen)}${row('Descrição',val('descricao'))}${row('Proximidades',val('proximidades'))}
+  </div>
+  <div class="sum-group">
+    <h3>${svg(I.tag)} Condições comerciais</h3>
+    ${row('Valor pretendido','R$ '+val('valor'))}${row('Comissão',val('comissao'))}
+    ${row('Pagamento',checks('pagamento'))}${row('Permuta',val('permuta_det'))}
+    ${row('Entrada (parcelamento)',val('parc_entrada')?'R$ '+val('parc_entrada'):'')}${row('Nº de parcelas',val('parc_num'))}${row('Periodicidade',val('parc_period'))}${row('Indexação',val('parc_index')==='Outro grão / índice'?val('parc_index_outro'):val('parc_index'))}
+    ${row('Urgência',radio('urgencia'))}${row('Negociação',radio('negocia'))}
+  </div>
+  <div class="sum-group">
+    <h3>${svg(I.mega)} Divulgação & autorização</h3>
+    ${row('Pode anunciar',radio('anunciar'))}${row('Placa/faixa',radio('placa'))}${row('Placa colocada',radio('placa_col'))}
+    ${row('Visitas',radio('visitas'))}${row('Contato visita',val('visita_contato'))}${row('Telefone visita',val('visita_fone'))}
+    ${row('Modalidade',radio('exclusividade'))}${row('Prazo',val('prazo'))}
+  </div>
+  <div class="sum-group">
+    <h3>${svg(I.doc)} Documentação</h3>
+    ${row('Situação da escritura',val('situacao_escritura'))}${row('Escritura no nome',radio('escritura'))}${row('Ônus/financiamento',radio('onus'))}
+    ${row('Situação documental',val('doc_situacao'))}${row('Ocupação',radio('ocupacao'))}
+    ${row('Prazo desocupação',val('prazo_desoc'))}${row('Meses necessários',val('prazo_meses'))}${row('Inquilino notificado',radio('notificado'))}
+  </div>
+  <div class="sum-group">
+    <h3>${svg(I.seal)} Formalização</h3>
+    ${row('Autorização de venda',$('input[name=aceite_termo]').checked?'Aceita':'—')}
+    ${row('Consentimento LGPD',$('input[name=aceite_lgpd]').checked?'Aceito':'—')}
+    ${row('Declaração eletrônica',$('input[name=aceite_decl]')&&$('input[name=aceite_decl]').checked?'Aceita (com registro de acesso)':'—')}
+    ${row('Local',val('local_assin'))}${row('Data',val('data_assin'))}${row('Validade',$('#validadeField')?$('#validadeField').value:'')}
+  </div>
+  </div>
+  <div class="note" style="margin-top:8px">
+    ${svg(I.seal)}
+    <span><b>Pronto para o CRM.</b> Ao clicar abaixo, será gerado o <b>PDF Premium (A4)</b> e uma <b>cópia em Word editável</b>, e a Autorização será enviada à Mude Imóveis (${EMAIL_MUDE}). Apenas as informações preenchidas constam no documento.</span>
+  </div>
+  <div class="nav" style="flex-wrap:wrap">
+    <button type="button" class="btn btn-ghost" onclick="goTo(7)">← Voltar e editar</button>
+    <button type="button" class="btn btn-gold" onclick="finalizar()">⬇ Baixar Autorização Premium Mude</button>
+  </div>`;
+  $('#formNav').style.display='none';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+const EMAIL_MUDE='mario@mudeimobiliaria.com.br';
+window.goTo=i=>{$('#formNav').style.display='flex';goTo(i);};
+
+function fichaTextoPlano(){
+  let out='AUTORIZAÇÃO DE VENDAS — MUDE IMÓVEIS\n';
+  $$('#fichaContent .sum-group').forEach(g=>{
+    const h=g.querySelector('h3');out+='\n== '+(h?h.textContent.trim():'')+' ==\n';
+    g.querySelectorAll('.sum-row').forEach(r=>{
+      out+=r.querySelector('.k').textContent.trim()+': '+r.querySelector('.v').textContent.trim()+'\n';
+    });
+  });
+  out+='\nCRECI/MS 6052-J — MRM Negócios e Consultorias Imobiliárias Ltda. (Mude Imóveis)\n';
+  out+='Documento gerado eletronicamente em '+new Date().toLocaleString('pt-BR')+'.';
+  return out;
+}
+function grupos(){return $$('#fichaContent .sum-group');}
+function fichaHTML(){
+  const dir=location.href.replace(/[^\/]*$/,'');
+  const css=`@page{size:A4;margin:13mm 14mm}
+    *{box-sizing:border-box}
+    body{font-family:'Segoe UI',Arial,sans-serif;color:#1a1a1a;margin:0;font-size:11.5px;line-height:1.5}
+    .head{display:flex;align-items:center;gap:16px;border-bottom:2px solid #BF9B5A;padding-bottom:12px;margin-bottom:14px}
+    .head img{height:60px}
+    .head h1{font-size:20px;margin:0;color:#0E0E0E;font-weight:700}
+    .head .sub{font-size:9.5px;color:#A07E3E;letter-spacing:3px;text-transform:uppercase;margin-top:3px}
+    .grp{margin-bottom:10px;page-break-inside:avoid;break-inside:avoid}
+    .grp h2{font-size:11.5px;color:#A07E3E;text-transform:uppercase;letter-spacing:1px;margin:0 0 4px;border-bottom:1px solid #e7e4dd;padding-bottom:3px}
+    .r{display:flex;font-size:11px;padding:2.4px 0;border-bottom:1px solid #f3f1ec}
+    .r .k{width:36%;color:#666;padding-right:8px}
+    .r .v{width:64%;color:#111}
+    .foot{margin-top:14px;border-top:1px solid #e7e4dd;padding-top:8px;font-size:9.3px;color:#888;text-align:center;page-break-inside:avoid}`;
+  let body=`<div class="head"><img src="${dir}Preto.png" onerror="this.style.display='none'"><div><h1>Autorização de Vendas</h1><div class="sub">Mude Imóveis · Premium</div></div></div>`;
+  grupos().forEach(g=>{
+    const h=g.querySelector('h3');body+=`<div class="grp"><h2>${h?h.textContent.trim():''}</h2>`;
+    g.querySelectorAll('.sum-row').forEach(r=>{body+=`<div class="r"><div class="k">${r.querySelector('.k').textContent.trim()}</div><div class="v">${r.querySelector('.v').textContent.trim()}</div></div>`;});
+    body+=`</div>`;
+  });
+  body+=`<div class="foot"><b>MRM Negócios e Consultorias Imobiliárias Ltda. — Mude Imóveis</b> · CRECI/MS 6052-J · Dourados-MS<br>Autorização registrada eletronicamente em ${new Date().toLocaleString('pt-BR')}. Mude que a Gente te Acompanha.</div>`;
+  return `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Autorização Premium Mude — ${val('prop_nome')||'Cliente'}</title><style>${css}</style></head><body>${body}</body></html>`;
+}
+function nomeArq(){return (val('prop_nome')||'cliente').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^\w]+/g,'-').replace(/^-|-$/g,'');}
+window.baixarPDF=()=>{
+  const w=window.open('','_blank');
+  if(!w){alert('Permita pop-ups/janelas para gerar o PDF Premium.');return false;}
+  w.document.write(fichaHTML());w.document.close();
+  setTimeout(()=>{try{w.focus();w.print();}catch(e){}},500);
+  return true;
+};
+function gerarWordDoc(){
+  let inner=`<div style="font-family:Calibri,Arial,sans-serif;color:#1a1a1a">`;
+  inner+=`<h1 style="color:#0E0E0E;border-bottom:2px solid #BF9B5A;padding-bottom:6px">Autorização de Vendas — Mude Imóveis</h1>`;
+  grupos().forEach(g=>{
+    const h=g.querySelector('h3');inner+=`<h2 style="color:#A07E3E;font-size:14px;margin:16px 0 4px">${h?h.textContent.trim():''}</h2><table style="width:100%;border-collapse:collapse">`;
+    g.querySelectorAll('.sum-row').forEach(r=>{inner+=`<tr><td style="width:35%;color:#666;padding:3px 6px;border-bottom:1px solid #eee;vertical-align:top">${r.querySelector('.k').textContent.trim()}</td><td style="padding:3px 6px;border-bottom:1px solid #eee">${r.querySelector('.v').textContent.trim()}</td></tr>`;});
+    inner+=`</table>`;
+  });
+  inner+=`<p style="margin-top:18px;font-size:11px;color:#888">MRM Negócios e Consultorias Imobiliárias Ltda. — Mude Imóveis · CRECI/MS 6052-J · Dourados-MS<br>Documento gerado em ${new Date().toLocaleString('pt-BR')}.</p></div>`;
+  const html=`<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'></head><body>${inner}</body></html>`;
+  const blob=new Blob(['﻿'+html],{type:'application/msword'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='Autorizacao-Mude-'+nomeArq()+'.doc';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+}
+window.finalizar=()=>{
+  gerarWordDoc();
+  baixarPDF();
+  const assunto='Autorização de Vendas — '+(val('prop_nome')||'Novo imóvel')+' ('+((TIPOS.find(t=>t.id===val('tipo'))||{}).nome||'')+')';
+  const link='mailto:'+EMAIL_MUDE+'?subject='+encodeURIComponent(assunto)+'&body='+encodeURIComponent(fichaTextoPlano());
+  setTimeout(()=>{window.location.href=link;},1100);
+  alert('Autorização concluída!\n\n• PDF Premium (A4) aberto para download.\n• Cópia em Word editável (.doc) baixada.\n• Seu e-mail abrirá para enviar a Autorização à Mude ('+EMAIL_MUDE+').\n\nNo sistema final, o PDF e o Word serão anexados e enviados automaticamente, com entrada direta no CRM.\n\nMude que a Gente te Acompanha.');
+};
+
+/* data default */
+$('input[name=data_assin]').valueAsDate=new Date();
+paint();
+</script>
+</body>
+</html>
