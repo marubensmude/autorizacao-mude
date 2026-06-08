@@ -1405,13 +1405,12 @@ function buildSummary(){
   </div>
   <div class="note" style="margin-top:8px">
     ${svg(I.seal)}
-    <span><b>Pronto para o CRM.</b> Ao concluir, a Autorização é enviada à Mude Imóveis (${EMAIL_MUDE}) com o relatório formatado e os anexos <b>PDF</b> e <b>Word</b>. Se quiser uma cópia no seu aparelho, use os botões de download. Apenas as informações preenchidas constam no documento.</span>
+    <span><b>Pronto para o CRM.</b> Ao concluir, a Autorização é enviada à Mude Imóveis (${EMAIL_MUDE}) com o relatório formatado e os anexos <b>PDF</b> e <b>Word</b>. Se desejar guardar uma cópia, use o botão <b>Baixar PDF</b>. Apenas as informações preenchidas constam no documento.</span>
   </div>
   <div class="nav" style="flex-wrap:wrap;gap:10px">
     <button type="button" class="btn btn-ghost" onclick="goTo(7)">← Voltar e editar</button>
     <span style="display:flex;gap:10px;flex-wrap:wrap">
       <button type="button" class="btn btn-ghost" onclick="gerarPDF(true)">⬇ Baixar PDF</button>
-      <button type="button" class="btn btn-ghost" onclick="gerarWordDoc(true)">⬇ Baixar Word</button>
       <button type="button" class="btn btn-gold" onclick="finalizar()">✓ Concluir e enviar à Mude</button>
     </span>
   </div>`;
@@ -1541,7 +1540,7 @@ async function gerarPDF(baixar){
     doc.text('MRM Negócios e Consultorias Imobiliárias Ltda. · Mude Imóveis · CRECI/MS 6052-J · Dourados-MS',mL,y);y+=3.4;
     doc.text('Autorização registrada eletronicamente em '+new Date().toLocaleString('pt-BR')+'. Mude que a Gente te Acompanha.',mL,y);
     if(baixar)doc.save('Autorizacao-Mude-'+nomeArq()+'.pdf');
-    return doc.output('datauristring').split(',')[1];
+    return doc.output('datauristring'); // data URI completo (EmailJS reconhece como anexo)
   }catch(e){console.error('Erro PDF',e); if(baixar)window.baixarPDFprint(); return null;}
 }
 window.baixarPDFprint=()=>{const w=window.open('','_blank');if(!w){alert('Permita pop-ups para gerar o PDF.');return;}w.document.write(fichaHTML());w.document.close();setTimeout(()=>{try{w.focus();w.print();}catch(e){}},500);};
@@ -1560,7 +1559,7 @@ function wordHTML(){
 function gerarWordDoc(baixar){
   const html='﻿'+wordHTML();
   if(baixar){const blob=new Blob([html],{type:'application/msword'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='Autorizacao-Mude-'+nomeArq()+'.doc';document.body.appendChild(a);a.click();document.body.removeChild(a);}
-  return btoa(unescape(encodeURIComponent(html)));
+  return 'data:application/msword;base64,'+btoa(unescape(encodeURIComponent(html))); // data URI completo p/ anexo EmailJS
 }
 window.finalizar=async()=>{
   const btn=$('#summary .btn-gold');
@@ -1586,13 +1585,13 @@ window.finalizar=async()=>{
   const restore=()=>{if(btn){btn.disabled=false;btn.innerHTML=btn.dataset.txt;}};
   try{
     await emailjs.send(EMAILJS_CFG.service,EMAILJS_CFG.template,Object.assign({},base,{content_pdf:pdf64||'',content_word:word64||''}));
-    alert('✅ Autorização enviada com sucesso à Mude Imóveis!\n\nE-mail entregue em '+EMAIL_MUDE+', formatado, com o PDF e o Word anexados.\n\nSe quiser uma cópia, use os botões "Baixar PDF" / "Baixar Word".\n\nMude que a Gente te Acompanha.');
+    alert('✅ Autorização enviada com sucesso à Mude Imóveis!\n\nE-mail entregue em '+EMAIL_MUDE+', formatado, com o PDF e o Word anexados.\n\nSe quiser guardar uma cópia, use o botão "Baixar PDF".\n\nMude que a Gente te Acompanha.');
     restore();return;
   }catch(err1){
     console.error('Falha com anexos:',err1);
     try{
       await emailjs.send(EMAILJS_CFG.service,EMAILJS_CFG.template,base);
-      alert('✅ Autorização enviada à Mude Imóveis!\n\nE-mail formatado entregue em '+EMAIL_MUDE+'.\n\nObs.: o envio COM anexos (PDF/Word) exige o plano pago do EmailJS — motivo: '+errMsg(err1)+'.\nVocê pode baixar o PDF/Word pelos botões e anexar manualmente, se quiser.\n\nMude que a Gente te Acompanha.');
+      alert('✅ Autorização enviada à Mude Imóveis!\n\nE-mail formatado entregue em '+EMAIL_MUDE+' (com o relatório completo no corpo).\n\nObs.: para o e-mail chegar COM o PDF e o Word anexados, é preciso ativar o plano pago do EmailJS. No plano gratuito só o corpo é enviado (limite de 50KB).\n\nMude que a Gente te Acompanha.');
     }catch(err2){
       console.error('Falha sem anexos:',err2);
       alert('❌ Não foi possível enviar automaticamente.\n\nMotivo: '+errMsg(err2)+'\n\nTente novamente. Se continuar, me mande exatamente esta mensagem que eu ajusto.');
