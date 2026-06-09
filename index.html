@@ -1569,9 +1569,8 @@ window.finalizar=async()=>{
     return;
   }
   if(btn){btn.disabled=true;btn.dataset.txt=btn.innerHTML;btn.innerHTML='Enviando…';}
-  // gera os anexos SEM baixar (no celular, baixar durante o envio atrapalha)
-  let pdf64=null,word64=null;
-  try{ pdf64=await gerarPDF(false); }catch(e){console.error('PDF',e);}
+  // gera o anexo Word SEM baixar (no celular, baixar durante o envio atrapalha)
+  let word64=null;
   try{ word64=gerarWordDoc(false); }catch(e){console.error('Word',e);}
   const base={
     cliente: val('prop_nome')||'Cliente',
@@ -1584,14 +1583,14 @@ window.finalizar=async()=>{
   };
   const restore=()=>{if(btn){btn.disabled=false;btn.innerHTML=btn.dataset.txt;}};
   try{
-    await emailjs.send(EMAILJS_CFG.service,EMAILJS_CFG.template,Object.assign({},base,{content_pdf:pdf64||'',content_word:word64||''}));
-    alert('✅ Autorização enviada com sucesso à Mude Imóveis!\n\nE-mail entregue em '+EMAIL_MUDE+', formatado, com o PDF e o Word anexados.\n\nSe quiser guardar uma cópia, use o botão "Baixar PDF".\n\nMude que a Gente te Acompanha.');
+    await emailjs.send(EMAILJS_CFG.service,EMAILJS_CFG.template,Object.assign({},base,{content_word:word64||''}));
+    alert('✅ Autorização enviada com sucesso à Mude Imóveis!\n\nE-mail entregue em '+EMAIL_MUDE+', formatado e com o arquivo Word anexado.\n\nSe quiser guardar uma cópia em PDF, use o botão "Baixar PDF".\n\nMude que a Gente te Acompanha.');
     restore();return;
   }catch(err1){
-    console.error('Falha com anexos:',err1);
+    console.error('Falha com anexo Word:',err1);
     try{
       await emailjs.send(EMAILJS_CFG.service,EMAILJS_CFG.template,base);
-      alert('✅ Autorização enviada à Mude Imóveis!\n\nE-mail formatado entregue em '+EMAIL_MUDE+' (com o relatório completo no corpo).\n\nObs.: para o e-mail chegar COM o PDF e o Word anexados, é preciso ativar o plano pago do EmailJS. No plano gratuito só o corpo é enviado (limite de 50KB).\n\nMude que a Gente te Acompanha.');
+      alert('⚠️ Autorização enviada à Mude Imóveis (somente no corpo do e-mail).\n\nO anexo Word NÃO foi aceito pelo serviço de envio.\nMotivo técnico: '+errMsg(err1)+'\n\nO relatório completo foi entregue em '+EMAIL_MUDE+'.\n\nMude que a Gente te Acompanha.');
     }catch(err2){
       console.error('Falha sem anexos:',err2);
       alert('❌ Não foi possível enviar automaticamente.\n\nMotivo: '+errMsg(err2)+'\n\nTente novamente. Se continuar, me mande exatamente esta mensagem que eu ajusto.');
