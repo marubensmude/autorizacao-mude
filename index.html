@@ -61,7 +61,7 @@ h1,h2,h3,.serif{font-family:'Cormorant Garamond',serif;font-weight:600;letter-sp
 header.brand{
   background:var(--branco);
   border-bottom:1px solid var(--linha);
-  padding:30px 24px 26px;
+  padding:16px 24px 13px;
   text-align:center;
   position:relative;
 }
@@ -79,14 +79,14 @@ header.brand{
   font-family:'Cormorant Garamond',serif;
   font-weight:700;color:var(--dourado-escuro);font-size:15px;
 }
-.logo-img{height:96px;width:auto;display:inline-block}
-.slogan{margin-top:10px;font-size:12.5px;letter-spacing:2.5px;color:var(--dourado-escuro);text-transform:uppercase;font-weight:400}
+.logo-img{height:58px;width:auto;display:inline-block}
+.slogan{margin-top:7px;font-size:11px;letter-spacing:2.5px;color:var(--dourado-escuro);text-transform:uppercase;font-weight:400}
 
 /* ---------- LAYOUT ---------- */
-.wrap{max-width:920px;margin:0 auto;padding:34px 22px 90px}
+.wrap{max-width:920px;margin:0 auto;padding:18px 22px 90px}
 .doc-title{text-align:center;margin-bottom:6px}
-.doc-title h1{font-size:38px;color:var(--preto);line-height:1.05}
-.doc-title p{max-width:620px;margin:14px auto 0;color:var(--cinza);font-size:15px}
+.doc-title h1{font-size:28px;color:var(--preto);line-height:1.08}
+.doc-title p{max-width:600px;margin:8px auto 0;color:var(--cinza);font-size:13px;line-height:1.5}
 
 /* ---------- STEPPER ---------- */
 .stepper{
@@ -264,6 +264,9 @@ select{appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns=
 .sum-row{display:grid;grid-template-columns:230px 1fr;gap:16px;padding:11px 0;border-bottom:1px solid var(--linha);font-size:13.5px}
 .sum-row .k{color:var(--cinza);letter-spacing:.3px}
 .sum-row .v{color:var(--preto-suave)}
+.sum-para{font-size:12.5px;color:var(--preto-suave);line-height:1.6;padding:7px 0;text-align:justify}
+.sum-para.ref{font-size:11px;color:var(--cinza)}
+.sum-para b{color:var(--preto);font-weight:600}
 .sum-group{margin-bottom:26px}
 .sum-group h3{font-size:20px;color:var(--preto);margin-bottom:6px;display:flex;align-items:center;gap:9px}
 .sum-group h3 svg{width:18px;height:18px;color:var(--dourado-escuro)}
@@ -278,9 +281,13 @@ footer.inst b{color:var(--grafite);font-weight:400}
 
 @media(max-width:680px){
   .field,.field.third,.field.quarter,.field.twothird{grid-column:span 12}
-  .doc-title h1{font-size:30px}
-  .card-body{padding:22px 18px 24px}
-  .card-head{padding:20px 18px 16px}
+  .doc-title h1{font-size:23px}
+  .doc-title p{display:none}
+  .logo-img{height:48px}
+  header.brand{padding:12px 18px 10px}
+  .wrap{padding:12px 16px 80px}
+  .card-body{padding:18px 16px 22px}
+  .card-head{padding:15px 16px 13px}
   .sign-grid,.sum-row{grid-template-columns:1fr}
   .btn{padding:13px 20px}
   .logo-text{font-size:24px;letter-spacing:4px}
@@ -924,6 +931,7 @@ const TIPOS=[
 /* ============ CAMPOS DINÂMICOS POR TIPO ============ */
 const num=(n,l,p,sz='third')=>`<div class="field ${sz}"><label>${l}</label><input type="text" name="${n}" placeholder="${p||''}"></div>`;
 const sel=(n,l,opts,sz='third')=>`<div class="field ${sz}"><label>${l}</label><select name="${n}">${opts.map(o=>`<option>${o}</option>`).join('')}</select></div>`;
+const money=(n,l,p='0,00',sz='third')=>`<div class="field ${sz}"><label>${l}</label><div class="prefix"><span class="pf">R$</span><input type="text" name="${n}" inputmode="numeric" data-mask="moeda" placeholder="${p}"></div></div>`;
 const amen=(name,items)=>`<div class="field full"><label>Diferenciais e comodidades</label><div class="amen" data-check="${name}">${items.map(i=>`<label class="pill check"><input type="checkbox" value="${i}"><span class="dot"></span>${i}</label>`).join('')}</div></div>`;
 const sec=t=>`<div class="section-label">${t}</div>`;
 const wrap=h=>`<div class="grid">${h}</div>`;
@@ -942,14 +950,14 @@ const DYN={
     sec('Medidas e composição')+
     num('area_util','Área útil (m²)','120')+num('area_total','Área total (m²)','150')+num('andar','Andar','')+
     num('quartos','Quartos','3')+num('suites','Suítes','1')+num('vagas','Vagas','2')+
-    num('cond','Valor do condomínio (R$)','')+num('andares','Andares do edifício','')+sel('mobiliado','Mobiliado',['Selecione','Não','Semimobiliado','Mobiliado'])+
+    money('cond','Valor do condomínio')+num('andares','Andares do edifício','')+sel('mobiliado','Mobiliado',['Selecione','Não','Semimobiliado','Mobiliado'])+
     amen('amen',['Elevador','Varanda gourmet','Sacada','Ar-condicionado','Armários embutidos','Lazer completo','Academia','Piscina','Salão de festas','Portaria 24h','Playground','Adega','Hidromassagem','2 por andar','Nascente/sol da manhã','Andar alto'])
   ),
   terreno:()=>wrap(
     sec('Dimensões e características')+
     num('area','Área do terreno (m²)','450')+num('frente','Frente (m)','15')+num('fundo','Fundo (m)','30')+
     sel('topografia','Topografia',['Selecione','Plano','Aclive','Declive','Irregular'])+sel('esquina','Posição',['Selecione','Meio de quadra','Esquina'])+sel('murado','Murado',['Selecione','Sim','Não','Parcial'])+
-    sel('zona','Zoneamento',['Selecione','Residencial','Comercial','Misto','Industrial','Rural'])+sel('condominio','Em condomínio fechado?',['Selecione','Não','Sim'])+num('cond','Valor do condomínio (R$)','')+
+    sel('zona','Zoneamento',['Selecione','Residencial','Comercial','Misto','Industrial','Rural'])+sel('condominio','Em condomínio fechado?',['Selecione','Não','Sim'])+money('cond','Valor do condomínio')+
     amen('amen',['Pronto para construir','Documentação ok','Aterrado','Água/esgoto','Energia na rua','Próximo a área nobre'])
   ),
   comercial:()=>wrap(
@@ -962,15 +970,15 @@ const DYN={
   sala:()=>wrap(
     sec('Características da sala comercial')+
     num('area_util','Área útil (m²)','')+num('andar','Andar','')+num('vagas','Vagas','')+
-    num('cond','Condomínio (R$)','')+sel('banheiro','Banheiro privativo',['Selecione','Sim','Não'])+sel('divisorias','Divisórias',['Selecione','Sim','Não','Planta livre'])+
+    money('cond','Condomínio')+sel('banheiro','Banheiro privativo',['Selecione','Sim','Não'])+sel('divisorias','Divisórias',['Selecione','Sim','Não','Planta livre'])+
     num('edificio','Edifício / Centro empresarial','')+
     amen('amen',['Elevador','Ar-condicionado','Recepção do edifício','Segurança 24h','Mobiliada','Vista','Pronta para uso'])
   ),
   ponto:()=>wrap(
     sec('Fundo de comércio')+
     `<div class="field third"><label>Ramo de atividade</label><input type="text" name="ramo" placeholder="Ex.: Restaurante"></div>`+
-    num('area','Área (m²)','')+num('aluguel','Aluguel atual (R$)','')+
-    num('faturamento','Faturamento médio mensal (R$)','')+sel('contrato','Contrato de locação',['Selecione','Vigente e transferível','A renovar','Imóvel próprio'])+sel('motivo','Inclui ponto e estrutura',['Selecione','Sim','Somente estrutura'])+
+    num('area','Área (m²)','')+money('aluguel','Aluguel atual')+
+    money('faturamento','Faturamento médio mensal')+sel('contrato','Contrato de locação',['Selecione','Vigente e transferível','A renovar','Imóvel próprio'])+sel('motivo','Inclui ponto e estrutura',['Selecione','Sim','Somente estrutura'])+
     `<div class="field full"><label>Motivo da venda</label><input type="text" name="motivo_venda" placeholder="Ex.: mudança de cidade, novo negócio..."></div>`+
     amen('amen',['Equipamentos inclusos','Mobiliário','Clientela formada','Localização de fluxo','Estoque','Funcionários','Licenças em dia'])
   ),
@@ -988,7 +996,7 @@ const DYN={
   ),
   pesqueiro:()=>wrap(
     sec('Estrutura do pesqueiro')+
-    num('area','Área do terreno (m²)','')+num('tanques','Nº de tanques / açudes','')+num('faturamento','Faturamento médio (R$)','')+
+    num('area','Área do terreno (m²)','')+num('tanques','Nº de tanques / açudes','')+money('faturamento','Faturamento médio')+
     `<div class="field third"><label>Espécies</label><input type="text" name="especies" placeholder="Ex.: tilápia, pacu, tambaqui"></div>`+
     sel('licenca','Licença ambiental',['Selecione','Regularizada','Em processo','A regularizar'])+num('capacidade','Capacidade (pessoas)','')+
     amen('amen',['Restaurante','Quiosques','Camping','Estacionamento','Casa sede','Energia','Píer','Bar','Cozinha industrial','Banheiros'])
@@ -1125,6 +1133,7 @@ TIPOS.forEach(t=>{
 function renderDyn(id,nome){
   $('#caractTitle').innerHTML=`Características — ${nome}`;
   $('#dynamicFields').innerHTML=DYN[id]?DYN[id]():'';
+  $$('#dynamicFields [data-mask]').forEach(mask);
   bindPills();
 }
 
@@ -1198,7 +1207,7 @@ function mask(el){
     else if(t==='fone'){v=v.slice(0,11).replace(/^(\d{2})(\d)/,'($1) $2').replace(/(\d{5})(\d)/,'$1-$2');}
     else if(t==='cep'){v=v.slice(0,8).replace(/(\d{5})(\d)/,'$1-$2');}
     else if(t==='numero'){v=v.slice(0,4);}
-    else if(t==='moeda'){v=v?parseInt(v,10).toLocaleString('pt-BR'):'';}
+    else if(t==='moeda'){v=v?(parseInt(v,10)/100).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}):'';}
     el.value=v;
   });
 }
@@ -1261,12 +1270,18 @@ async function registrarAcesso(){
   if(acessoFeito)return;acessoFeito=true;
   const box=$('#acessoBox');if(!box)return;
   const agora=new Date().toLocaleString('pt-BR');
-  const disp=navigator.userAgent.split(')')[0].split('(')[1]||navigator.platform||'Dispositivo';
-  box.innerHTML=`<b>Data/hora:</b> ${agora}<br><b>Dispositivo:</b> ${disp}<br><b>Endereço IP:</b> <span id="ipReg">capturando…</span>`;
+  const ua=navigator.userAgent||'';
+  const disp=ua.split(')')[0].split('(')[1]||navigator.platform||'Dispositivo';
+  const idioma=navigator.language||(navigator.languages&&navigator.languages[0])||'';
+  let fuso='';try{fuso=Intl.DateTimeFormat().resolvedOptions().timeZone||'';}catch(e){}
+  const tela=(window.screen?screen.width+'×'+screen.height+' px':'')+(window.devicePixelRatio?(' @'+window.devicePixelRatio+'x'):'');
+  const protocolo='MUDE-'+Date.now().toString(36).toUpperCase()+'-'+Math.random().toString(36).slice(2,6).toUpperCase();
+  window.REGINFO={protocolo:protocolo,dataHora:agora,disp:disp,ua:ua,plataforma:navigator.platform||'',idioma:idioma,fuso:fuso,tela:tela,pagina:location.href,ip:'capturando…'};
+  box.innerHTML=`<b>Protocolo:</b> ${protocolo}<br><b>Data/hora:</b> ${agora}<br><b>Dispositivo:</b> ${disp}<br><b>Endereço IP:</b> <span id="ipReg">capturando…</span>`;
   try{
     const r=await fetch('https://api.ipify.org?format=json');
-    const d=await r.json();const ip=document.getElementById('ipReg');if(ip)ip.textContent=d.ip;
-  }catch(e){const ip=document.getElementById('ipReg');if(ip)ip.textContent='registrado no momento do envio';}
+    const d=await r.json();window.REGINFO.ip=d.ip;const ip=document.getElementById('ipReg');if(ip)ip.textContent=d.ip;
+  }catch(e){window.REGINFO.ip='registrado no momento do envio';const ip=document.getElementById('ipReg');if(ip)ip.textContent='registrado no momento do envio';}
 }
 
 /* ============ NAVEGAÇÃO ============ */
@@ -1287,7 +1302,8 @@ function paint(){
     ? 'Revisar autorização <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>'
     : 'Continuar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
   if(cur===7)registrarAcesso();
-  window.scrollTo({top:0,behavior:'smooth'});
+  if(window._mudeNavegou){const _c=document.querySelector('.card');if(_c)_c.scrollIntoView({behavior:'smooth',block:'start'});}
+  window._mudeNavegou=true;
 }
 function validateStep(){
   let ok=true;
@@ -1340,6 +1356,48 @@ function condominioLabel(){
 }
 function escHTML(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function row(k,v){return v&&v!=='—'&&v!==''?`<div class="sum-row"><div class="k">${k}</div><div class="v">${escHTML(v)}</div></div>`:'';}
+function para(t,cls){return t?`<div class="sum-para${cls?' '+cls:''}">${escHTML(t)}</div>`:'';}
+function fmtDataBR(d){if(!d)return '';const a=(''+d).split('-');return a.length===3?`${a[2]}/${a[1]}/${a[0]}`:d;}
+function termoHTML(){
+  const nome=val('prop_nome')||'o(a) proprietário(a)';
+  const doc=val('prop_cpf')?(', inscrito(a) no CPF/CNPJ sob o nº '+val('prop_cpf')):'';
+  const com=val('comissao')||'5';
+  const prazoTxt=val('prazo')||(($('#validadeField')||{}).value)||'—';
+  const anunciar=radio('anunciar'),placa=radio('placa'),visitas=radio('visitas'),excl=radio('exclusividade');
+  const divServ=anunciar==='Sim'?'AUTORIZA expressamente a divulgação e o anúncio do imóvel em portais imobiliários, redes sociais e demais canais comerciais':'NÃO autoriza a divulgação pública do imóvel, restringindo o atendimento a contatos diretos';
+  const ps=[
+    `Pelo presente Termo, ${nome}${doc}, doravante denominado(a) OUTORGANTE, AUTORIZA a MRM Negócios e Consultorias Imobiliárias Ltda. — Mude Imóveis, inscrita no CRECI/MS sob o nº 6052-J, doravante denominada OUTORGADA, a promover a venda e a intermediação do imóvel descrito neste documento, nas condições aqui declaradas.`,
+    `O OUTORGANTE ${divServ}. Colocação de placa/faixa no imóvel: ${placa||'—'}. Realização de visitas: ${visitas||'—'}. Modalidade da autorização: ${excl||'—'}. Prazo de vigência: ${prazoTxt}, prorrogável por igual período, sucessivamente, salvo manifestação por escrito de qualquer das partes (Decreto 81.871/78 e Resolução COFECI 1.404/2018).`,
+    `A comissão de intermediação fica ajustada em ${com}% (cinco por cento, salvo percentual indicado) sobre o valor efetivamente negociado, devida nos termos dos arts. 722 a 729 do Código Civil.`,
+    `O OUTORGANTE declara que as informações prestadas são verdadeiras e consente, conforme a LGPD (Lei 13.709/2018), com o tratamento de seus dados pessoais pela Mude Imóveis para fins de intermediação imobiliária, divulgação do imóvel e contato comercial.`
+  ];
+  return ps.map(t=>para(t)).join('')+para('Fundamentos legais: Lei 6.530/78 · Decreto 81.871/78, art. 5º · Resolução COFECI 005/78 · Resolução COFECI 1.404/2018 · Código Civil, arts. 722–729 · Modelo CRECI-MS.','ref');
+}
+function regHTML(){
+  const R=window.REGINFO||{};
+  const aceT=$('input[name=aceite_termo]')&&$('input[name=aceite_termo]').checked;
+  const aceL=$('input[name=aceite_lgpd]')&&$('input[name=aceite_lgpd]').checked;
+  const aceD=$('input[name=aceite_decl]')&&$('input[name=aceite_decl]').checked;
+  let h='';
+  h+=row('Autorização de venda e divulgação',aceT?'Aceita pelo proprietário':'—');
+  h+=row('Consentimento LGPD',aceL?'Concedido':'—');
+  h+=row('Declaração de registro de acesso',aceD?'Aceita':'—');
+  h+=row('Protocolo de registro',R.protocolo||'');
+  h+=row('Data/hora do registro',R.dataHora||'');
+  h+=row('Endereço IP',R.ip&&R.ip!=='capturando…'?R.ip:'registrado no momento do envio');
+  h+=row('Dispositivo',R.disp||'');
+  h+=row('Sistema / Plataforma',R.plataforma||'');
+  h+=row('Navegador',R.ua||'');
+  h+=row('Idioma do dispositivo',R.idioma||'');
+  h+=row('Fuso horário',R.fuso||'');
+  h+=row('Resolução de tela',R.tela||'');
+  h+=row('Página de origem',R.pagina||'');
+  h+=row('Data da autorização',fmtDataBR(val('data_assin')));
+  h+=row('Local',val('local_assin'));
+  h+=row('Vigência',(($('#validadeField')||{}).value)||'');
+  h+=para('Para fins de comprovação da manifestação de vontade, o OUTORGANTE autorizou o registro da origem do seu acesso — data, hora, endereço IP e dispositivo utilizado — como evidência desta autorização, nos termos do art. 10 do Marco Civil da Internet (Lei 12.965/2014) e do art. 441 do Código de Processo Civil.','ref');
+  return h;
+}
 
 function buildSummary(){
   $$('.step').forEach(s=>s.classList.remove('active'));
@@ -1351,20 +1409,25 @@ function buildSummary(){
   const tipoNome=(TIPOS.find(t=>t.id===val('tipo'))||{}).nome||'—';
   const dyn=[...$$('#dynamicFields input, #dynamicFields select')]
     .filter(e=>e.type!=='checkbox'&&e.value&&e.value!=='Selecione')
-    .map(e=>{const l=e.closest('.field')?.querySelector('label');return l?row(l.textContent.trim(),e.value):'';}).join('');
+    .map(e=>{const l=e.closest('.field')?.querySelector('label');const v=(e.dataset&&e.dataset.mask==='moeda'&&e.value)?('R$ '+e.value):e.value;return l?row(l.textContent.trim(),v):'';}).join('');
   const dynAmen=checks('amen');
 
   sum.innerHTML=`
   <div id="fichaContent">
   <div class="sum-group">
-    <h3>${svg(I.user)} Proprietário</h3>
+    <h3>${svg(I.user)} 1. Proprietário (Outorgante)</h3>
     ${row('Nome',val('prop_nome'))}${row('Tipo',val('prop_tipo'))}${row('CPF/CNPJ',val('prop_cpf'))}
     ${row('Estado civil',val('prop_civil'))}${row('Profissão',val('prop_prof'))}
     ${row('E-mail',val('prop_email'))}${row('WhatsApp',val('prop_whats'))}
   </div>
   <div class="sum-group">
-    <h3>${svg(I.tag)} Imóvel</h3>
-    ${row('Tipo',tipoNome)}${row('Corretor Mude',corretorLabel())}${row('Finalidade / Aptidão',finalidadeAtual()||'—')}
+    <h3>${svg(I.seal)} 2. Intermediária (Outorgada)</h3>
+    ${row('Empresa','MRM Negócios e Consultorias Imobiliárias Ltda. — Mude Imóveis')}
+    ${row('CRECI/MS','6052-J')}${row('Sede','Dourados — MS')}${row('Corretor responsável',corretorLabel())}
+  </div>
+  <div class="sum-group">
+    <h3>${svg(I.tag)} 3. Imóvel objeto da autorização</h3>
+    ${row('Tipo',tipoNome)}${row('Finalidade / Aptidão',finalidadeAtual()||'—')}
     ${row('Aluguel bruto atual',val('aluguel_bruto')?'R$ '+val('aluguel_bruto'):'')}
     ${row('Locação atual',val('locacao_valor')?'R$ '+val('locacao_valor'):'')}${row('Contrato restante',val('contrato_restante'))}${row('Desocupação',val('desoc_comercial'))}
     ${row('Endereço',[val('logradouro'),val('numero'),val('bairro'),val('cidade')+'/'+val('uf')].filter(Boolean).join(', '))}
@@ -1373,34 +1436,42 @@ function buildSummary(){
     ${row('Propriedade rural',val('rural_nome'))}${row('Acesso',val('rural_acesso'))}${row('Google Maps',val('rural_maps'))}${row('Como chegar',val('rural_comochegar'))}
   </div>
   <div class="sum-group">
-    <h3>${svg(I.list)} Características</h3>
-    ${row('Condição / Localização',radio('condicao'))}${dyn}${row('Diferenciais',dynAmen)}${row('Descrição',val('descricao'))}${row('Proximidades',val('proximidades'))}
+    <h3>${svg(I.list)} 4. Características</h3>
+    ${row('Condição / Localização',radio('condicao'))}${dyn}${row('Diferenciais',dynAmen)}
   </div>
   <div class="sum-group">
-    <h3>${svg(I.tag)} Condições comerciais</h3>
+    <h3>${svg(I.doc)} 5. Observações do imóvel</h3>
+    ${val('descricao')?para(val('descricao')):''}
+    ${val('proximidades')?('<div class="sum-para"><b>Proximidades:</b> '+escHTML(val('proximidades'))+'</div>'):''}
+    ${(!val('descricao')&&!val('proximidades'))?row('Observações','—'):''}
+  </div>
+  <div class="sum-group">
+    <h3>${svg(I.tag)} 6. Condições comerciais</h3>
     ${row('Valor pretendido','R$ '+val('valor'))}${row('Comissão',val('comissao'))}
     ${row('Pagamento',checks('pagamento'))}${row('Permuta',val('permuta_det'))}
     ${row('Entrada (parcelamento)',val('parc_entrada')?'R$ '+val('parc_entrada'):'')}${row('Nº de parcelas',val('parc_num'))}${row('Periodicidade',val('parc_period'))}${row('Indexação',val('parc_index')==='Outro grão / índice'?val('parc_index_outro'):val('parc_index'))}
     ${row('Urgência',radio('urgencia'))}${row('Negociação',radio('negocia'))}
   </div>
   <div class="sum-group">
-    <h3>${svg(I.mega)} Divulgação & autorização</h3>
-    ${row('Pode anunciar',radio('anunciar'))}${row('Placa/faixa',radio('placa'))}${row('Placa colocada',radio('placa_col'))}
-    ${row('Visitas',radio('visitas'))}${row('Contato visita',val('visita_contato'))}${row('Telefone visita',val('visita_fone'))}
-    ${row('Modalidade',radio('exclusividade'))}${row('Prazo',val('prazo'))}
+    <h3>${svg(I.mega)} 7. Autorizações e divulgação</h3>
+    ${row('Autoriza anunciar/divulgar',radio('anunciar'))}${row('Placa/faixa',radio('placa'))}${row('Placa já colocada',radio('placa_col'))}
+    ${row('Visitas',radio('visitas'))}${row('Contato para visita',val('visita_contato'))}${row('Telefone visita',val('visita_fone'))}
+    ${row('Modalidade',radio('exclusividade'))}${row('Prazo de autorização',val('prazo'))}
   </div>
   <div class="sum-group">
-    <h3>${svg(I.doc)} Documentação</h3>
+    <h3>${svg(I.doc)} 8. Documentação</h3>
     ${row('Situação da escritura',val('situacao_escritura'))}${row('Escritura no nome',radio('escritura'))}${row('Ônus/financiamento',radio('onus'))}
     ${row('Situação documental',val('doc_situacao'))}${row('Ocupação',radio('ocupacao'))}
     ${row('Prazo desocupação',val('prazo_desoc'))}${row('Meses necessários',val('prazo_meses'))}${row('Inquilino notificado',radio('notificado'))}
   </div>
   <div class="sum-group">
-    <h3>${svg(I.seal)} Formalização</h3>
-    ${row('Autorização de venda',$('input[name=aceite_termo]').checked?'Aceita':'—')}
-    ${row('Consentimento LGPD',$('input[name=aceite_lgpd]').checked?'Aceito':'—')}
-    ${row('Declaração eletrônica',$('input[name=aceite_decl]')&&$('input[name=aceite_decl]').checked?'Aceita (com registro de acesso)':'—')}
-    ${row('Local',val('local_assin'))}${row('Data',val('data_assin'))}${row('Validade',$('#validadeField')?$('#validadeField').value:'')}
+    <h3>${svg(I.seal)} 9. Termo de autorização e fundamentos legais</h3>
+    ${termoHTML()}
+  </div>
+  <div class="sum-group">
+    <h3>${svg(I.seal)} 10. Registro eletrônico da manifestação de vontade</h3>
+    ${regHTML()}
+    ${para('Autorização registrada eletronicamente, com validade jurídica amparada pela manifestação de vontade e pelo registro de acesso. Recomenda-se o arquivamento por, no mínimo, 1 ano após o término da vigência (Resolução COFECI 459/95). A validação jurídica final está sujeita à orientação do advogado da empresa.','ref')}
   </div>
   </div>
   <div class="note" style="margin-top:8px">
@@ -1415,7 +1486,8 @@ function buildSummary(){
     </span>
   </div>`;
   $('#formNav').style.display='none';
-  window.scrollTo({top:0,behavior:'smooth'});
+  if(window._mudeNavegou){const _c=document.querySelector('.card');if(_c)_c.scrollIntoView({behavior:'smooth',block:'start'});}
+  window._mudeNavegou=true;
 }
 const EMAIL_MUDE='mario@mudeimobiliaria.com.br';
 window.goTo=i=>{$('#formNav').style.display='flex';goTo(i);};
@@ -1427,6 +1499,7 @@ function fichaTextoPlano(){
     g.querySelectorAll('.sum-row').forEach(r=>{
       out+=r.querySelector('.k').textContent.trim()+': '+r.querySelector('.v').textContent.trim()+'\n';
     });
+    g.querySelectorAll('.sum-para').forEach(pp=>{out+=pp.textContent.trim()+'\n';});
   });
   out+='\nCRECI/MS 6052-J — MRM Negócios e Consultorias Imobiliárias Ltda. (Mude Imóveis)\n';
   out+='Documento gerado eletronicamente em '+new Date().toLocaleString('pt-BR')+'.';
@@ -1441,11 +1514,11 @@ function reportHTML(){
   grupos().forEach(g=>{
     const t=(g.querySelector('h3')?g.querySelector('h3').textContent.trim():'');
     h+=`<div style="margin:14px 0 4px;font-size:13px;font-weight:bold;color:#A07E3E;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid #e7e4dd;padding-bottom:3px">${esc(t)}</div>`;
-    h+=`<table style="width:100%;border-collapse:collapse;font-size:13px">`;
-    g.querySelectorAll('.sum-row').forEach(r=>{
-      h+=`<tr><td style="width:38%;color:#666;padding:4px 8px 4px 0;vertical-align:top;border-bottom:1px solid #f3f1ec">${esc(r.querySelector('.k').textContent.trim())}</td><td style="color:#111;padding:4px 0;border-bottom:1px solid #f3f1ec">${esc(r.querySelector('.v').textContent.trim())}</td></tr>`;
-    });
-    h+=`</table>`;
+    const _rows=g.querySelectorAll('.sum-row');
+    if(_rows.length){h+=`<table style="width:100%;border-collapse:collapse;font-size:13px">`;
+      _rows.forEach(r=>{h+=`<tr><td style="width:38%;color:#666;padding:4px 8px 4px 0;vertical-align:top;border-bottom:1px solid #f3f1ec">${esc(r.querySelector('.k').textContent.trim())}</td><td style="color:#111;padding:4px 0;border-bottom:1px solid #f3f1ec">${esc(r.querySelector('.v').textContent.trim())}</td></tr>`;});
+      h+=`</table>`;}
+    g.querySelectorAll('.sum-para').forEach(pp=>{h+=`<p style="font-size:12px;color:#333;line-height:1.6;text-align:justify;margin:7px 0">${pp.innerHTML}</p>`;});
   });
   h+=`<div style="margin-top:16px;border-top:1px solid #e7e4dd;padding-top:8px;font-size:11px;color:#888"><b>MRM Negócios e Consultorias Imobiliárias Ltda. — Mude Imóveis</b> &middot; CRECI/MS 6052-J &middot; Dourados-MS<br>Autorização registrada eletronicamente em ${new Date().toLocaleString('pt-BR')}. Mude que a Gente te Acompanha.</div></div>`;
   return h;
@@ -1469,6 +1542,7 @@ function fichaHTML(){
   grupos().forEach(g=>{
     const h=g.querySelector('h3');body+=`<div class="grp"><h2>${h?h.textContent.trim():''}</h2>`;
     g.querySelectorAll('.sum-row').forEach(r=>{body+=`<div class="r"><div class="k">${r.querySelector('.k').textContent.trim()}</div><div class="v">${r.querySelector('.v').textContent.trim()}</div></div>`;});
+    g.querySelectorAll('.sum-para').forEach(pp=>{body+=`<div style="font-size:10.5px;color:#333;line-height:1.55;text-align:justify;padding:4px 0">${pp.innerHTML}</div>`;});
     body+=`</div>`;
   });
   body+=`<div class="foot"><b>MRM Negócios e Consultorias Imobiliárias Ltda. — Mude Imóveis</b> · CRECI/MS 6052-J · Dourados-MS<br>Autorização registrada eletronicamente em ${new Date().toLocaleString('pt-BR')}. Mude que a Gente te Acompanha.</div>`;
@@ -1532,6 +1606,15 @@ async function gerarPDF(baixar){
         y+=rowH;
         doc.setDrawColor(243,241,236);doc.setLineWidth(0.1);doc.line(mL,y-1,pw-mR,y-1);
       });
+      g.querySelectorAll('.sum-para').forEach(pp=>{
+        const ptxt=pdfTxt(pp.textContent.trim());
+        const pl=doc.splitTextToSize(ptxt,usable-1);
+        const ph=pl.length*4+2.5;
+        if(y+ph>bottom){doc.addPage();y=16;}
+        doc.setFont('helvetica','normal');doc.setFontSize(8.6);doc.setTextColor(70,70,70);
+        doc.text(pl,mL,y+3);
+        y+=ph;
+      });
       y+=4;
     });
     if(y>bottom-10){doc.addPage();y=16;}
@@ -1552,6 +1635,7 @@ function wordHTML(){
     const h=g.querySelector('h3');inner+=`<h2 style="color:#A07E3E;font-size:14px;margin:16px 0 4px">${h?h.textContent.trim():''}</h2><table style="width:100%;border-collapse:collapse">`;
     g.querySelectorAll('.sum-row').forEach(r=>{inner+=`<tr><td style="width:35%;color:#666;padding:3px 6px;border-bottom:1px solid #eee;vertical-align:top">${r.querySelector('.k').textContent.trim()}</td><td style="padding:3px 6px;border-bottom:1px solid #eee">${r.querySelector('.v').textContent.trim()}</td></tr>`;});
     inner+=`</table>`;
+    g.querySelectorAll('.sum-para').forEach(pp=>{inner+=`<p style="font-size:12px;color:#333;line-height:1.6;text-align:justify;margin:7px 0">${pp.innerHTML}</p>`;});
   });
   inner+=`<p style="margin-top:18px;font-size:11px;color:#888">MRM Negócios e Consultorias Imobiliárias Ltda. — Mude Imóveis · CRECI/MS 6052-J · Dourados-MS<br>Documento gerado em ${new Date().toLocaleString('pt-BR')}.</p></div>`;
   return `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'></head><body>${inner}</body></html>`;
