@@ -1509,18 +1509,43 @@ function grupos(){return $$('#fichaContent .sum-group');}
 const esc=s=>(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 /* Corpo do e-mail em HTML — mesmo layout do relatório do cliente */
 function reportHTML(){
-  let h=`<div style="font-family:Arial,Helvetica,sans-serif;max-width:660px;margin:0 auto;color:#1a1a1a">`;
-  h+=`<div style="border-bottom:3px solid #BF9B5A;padding-bottom:10px;margin-bottom:6px"><span style="font-size:22px;font-weight:bold;color:#0E0E0E">Autorização de Vendas</span><br><span style="font-size:11px;color:#A07E3E;letter-spacing:2px">MUDE IMÓVEIS &middot; PREMIUM</span></div>`;
+  const R=window.REGINFO||{};
+  const emiss=R.dataHora||new Date().toLocaleString('pt-BR');
+  let h=`<div style="font-family:Georgia,'Times New Roman',serif;max-width:680px;margin:0 auto;background:#ffffff;color:#1a1a1a;border:1px solid #e7e1d6">`;
+  h+=`<div style="height:4px;background:#BF9B5A;font-size:0;line-height:0">&nbsp;</div>`;
+  /* cabeçalho */
+  h+=`<div style="padding:22px 26px 14px">`;
+  h+=`<table style="width:100%;border-collapse:collapse"><tr>`;
+  h+=`<td style="vertical-align:top"><div style="font-family:Georgia,serif;font-size:21px;font-weight:bold;letter-spacing:.5px;color:#0E0E0E">AUTORIZAÇÃO DE VENDAS</div><div style="font-family:Arial,sans-serif;font-size:10px;letter-spacing:2px;color:#A07E3E;margin-top:4px">MUDE IMÓVEIS &middot; INTERMEDIAÇÃO IMOBILIÁRIA</div></td>`;
+  h+=`<td style="vertical-align:top;text-align:right;font-family:Arial,sans-serif;font-size:10px;color:#888;line-height:1.45"><div style="color:#aaa">DOCUMENTO Nº</div><div style="color:#111;font-weight:bold;font-size:11px">${esc(R.protocolo||'—')}</div><div style="color:#aaa;margin-top:5px">EMISSÃO</div><div style="color:#111">${esc(emiss)}</div><div style="color:#A07E3E;margin-top:5px;font-weight:bold">CRECI/MS 6052-J</div></td>`;
+  h+=`</tr></table>`;
+  h+=`<div style="border-top:2px solid #0E0E0E;margin-top:12px;font-size:0">&nbsp;</div><div style="width:120px;border-top:2px solid #BF9B5A;font-size:0">&nbsp;</div>`;
+  h+=`<div style="font-style:italic;color:#777;font-size:12px;margin-top:8px">Instrumento particular de autorização de venda e intermediação imobiliária</div>`;
+  h+=`</div>`;
+  /* seções */
+  h+=`<div style="padding:0 26px">`;
   grupos().forEach(g=>{
-    const t=(g.querySelector('h3')?g.querySelector('h3').textContent.trim():'');
-    h+=`<div style="margin:14px 0 4px;font-size:13px;font-weight:bold;color:#A07E3E;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid #e7e4dd;padding-bottom:3px">${esc(t)}</div>`;
+    const raw=(g.querySelector('h3')?g.querySelector('h3').textContent.trim():'');
+    const m=raw.match(/^(\d+)\.\s*(.*)$/);const num=m?m[1]:'';const name=m?m[2]:raw;
+    h+=`<div style="margin:16px 0 5px"><table style="border-collapse:collapse"><tr>`+(num?`<td style="background:#BF9B5A;color:#fff;font-family:Arial,sans-serif;font-weight:bold;font-size:11px;width:18px;height:18px;text-align:center;vertical-align:middle">${num}</td><td style="width:8px"></td>`:'')+`<td style="font-family:Arial,sans-serif;font-size:12px;font-weight:bold;letter-spacing:1px;text-transform:uppercase;color:#0E0E0E;vertical-align:middle">${esc(name)}</td></tr></table><div style="border-top:1px solid #e2d8c6;margin-top:4px;font-size:0">&nbsp;</div></div>`;
     const _rows=g.querySelectorAll('.sum-row');
-    if(_rows.length){h+=`<table style="width:100%;border-collapse:collapse;font-size:13px">`;
-      _rows.forEach(r=>{h+=`<tr><td style="width:38%;color:#666;padding:4px 8px 4px 0;vertical-align:top;border-bottom:1px solid #f3f1ec">${esc(r.querySelector('.k').textContent.trim())}</td><td style="color:#111;padding:4px 0;border-bottom:1px solid #f3f1ec">${esc(r.querySelector('.v').textContent.trim())}</td></tr>`;});
+    if(_rows.length){h+=`<table style="width:100%;border-collapse:collapse;font-family:Arial,sans-serif;font-size:12.5px">`;
+      let alt=false;
+      _rows.forEach(r=>{const bg=alt?'background:#faf7f2;':'';alt=!alt;
+        h+=`<tr><td style="${bg}width:36%;color:#777;padding:5px 10px 5px 6px;vertical-align:top;border-bottom:1px solid #f1ece3">${esc(r.querySelector('.k').textContent.trim())}</td><td style="${bg}color:#1a1a1a;padding:5px 6px;border-bottom:1px solid #f1ece3">${esc(r.querySelector('.v').textContent.trim())}</td></tr>`;});
       h+=`</table>`;}
-    g.querySelectorAll('.sum-para').forEach(pp=>{h+=`<p style="font-size:12px;color:#333;line-height:1.6;text-align:justify;margin:7px 0">${pp.innerHTML}</p>`;});
+    g.querySelectorAll('.sum-para').forEach(pp=>{const ref=pp.classList.contains('ref');h+=`<p style="font-family:${ref?'Arial,sans-serif':'Georgia,serif'};font-size:${ref?'10.5px':'12px'};color:${ref?'#888':'#333'};line-height:1.7;text-align:justify;margin:8px 0;${ref?'font-style:italic':''}">${pp.innerHTML}</p>`;});
   });
-  h+=`<div style="margin-top:16px;border-top:1px solid #e7e4dd;padding-top:8px;font-size:11px;color:#888"><b>MRM Negócios e Consultorias Imobiliárias Ltda. — Mude Imóveis</b> &middot; CRECI/MS 6052-J &middot; Dourados-MS<br>Autorização registrada eletronicamente em ${new Date().toLocaleString('pt-BR')}. Mude que a Gente te Acompanha.</div></div>`;
+  h+=`</div>`;
+  /* assinaturas */
+  const localData=(val('local_assin')||'Dourados/MS')+', '+(fmtDataBR(val('data_assin'))||new Date().toLocaleDateString('pt-BR'))+'.';
+  h+=`<div style="padding:6px 26px 0"><div style="border-top:1px solid #e2d8c6;margin:14px 0;font-size:0">&nbsp;</div><div style="font-family:Arial,sans-serif;font-size:12px;margin-bottom:30px">${esc(localData)}</div>`;
+  h+=`<table style="width:100%;border-collapse:collapse;font-family:Arial,sans-serif"><tr><td style="width:46%;border-top:1px solid #111;padding-top:5px;font-size:11px;vertical-align:top"><b>OUTORGANTE</b><br>${esc(val('prop_nome')||'Proprietário')}${val('prop_cpf')?'<br>CPF/CNPJ '+esc(val('prop_cpf')):''}</td><td style="width:8%"></td><td style="width:46%;border-top:1px solid #111;padding-top:5px;font-size:11px;vertical-align:top"><b>OUTORGADA</b><br>MRM — Mude Imóveis<br>CRECI/MS 6052-J${val('corretor')?' — '+esc(corretorLabel()):''}</td></tr></table></div>`;
+  /* selo de autenticidade */
+  h+=`<div style="margin:18px 26px 0;background:#faf7f2;border:1px solid #e2d3b4;padding:12px 14px;font-family:Arial,sans-serif"><div style="font-size:10.5px;font-weight:bold;letter-spacing:1px;color:#A07E3E;margin-bottom:5px">REGISTRO ELETRÔNICO DE AUTENTICIDADE</div><div style="font-size:11px;color:#555;line-height:1.6">Documento gerado e registrado eletronicamente sob o protocolo <b>${esc(R.protocolo||'—')}</b>, em ${esc(emiss)}. Origem do acesso: IP <b>${esc(R.ip||'—')}</b> &middot; ${esc(R.disp||'—')}. Este comprovante atesta a manifestação de vontade do proprietário quanto à autorização de venda, nos termos do Marco Civil da Internet (art. 10) e da legislação imobiliária aplicável.</div></div>`;
+  /* rodapé */
+  h+=`<div style="margin-top:18px;border-top:3px solid #BF9B5A;font-size:0">&nbsp;</div><div style="padding:10px 26px 20px;font-family:Arial,sans-serif;font-size:10px;color:#999;text-align:center"><b style="color:#777">MRM Negócios e Consultorias Imobiliárias Ltda. — Mude Imóveis</b> &middot; CRECI/MS 6052-J &middot; Dourados-MS<br>Mude que a Gente te Acompanha.</div>`;
+  h+=`</div>`;
   return h;
 }
 function fichaHTML(){
@@ -1576,54 +1601,125 @@ async function gerarPDF(baixar){
   const JP=(window.jspdf&&window.jspdf.jsPDF)?window.jspdf.jsPDF:null;
   if(!JP){ if(baixar)window.baixarPDFprint(); return null; }
   try{
+    const R=window.REGINFO||{};
     const doc=new JP({unit:'mm',format:'a4'});
-    const pw=210,mL=14,mR=14,usable=pw-mL-mR,bottom=283,kW=usable*0.36;
-    let y=15;
-    try{ if(typeof LOGO_PRETO_B64!=='undefined') doc.addImage(LOGO_PRETO_B64,'PNG',mL,y,21,21,undefined,'FAST'); }catch(e){}
-    doc.setFont('helvetica','bold');doc.setFontSize(18);doc.setTextColor(14,14,14);
-    doc.text('Autorização de Vendas',mL+26,y+9);
-    doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(160,126,62);
-    doc.text('MUDE IMÓVEIS · PREMIUM',mL+26,y+15);
-    y+=24;
-    doc.setDrawColor(191,155,90);doc.setLineWidth(0.6);doc.line(mL,y,pw-mR,y);y+=7;
+    doc.setLineHeightFactor(1.35);
+    const pw=210,mL=16,mR=16,usable=pw-mL-mR;
+    const GOLD=[191,155,90],GOLDd=[150,118,55],INK=[20,20,20],GRAY=[115,115,115],LINE=[222,216,205],SOFT=[247,244,239];
+    const footY=288,bottom=276,kW=usable*0.34;
+    let y=0;
+    const ensure=(need)=>{ if(y+need>bottom){doc.addPage();y=18;} };
+
+    /* ===== CABEÇALHO ===== */
+    doc.setFillColor(GOLD[0],GOLD[1],GOLD[2]);doc.rect(0,0,pw,3.2,'F');
+    try{ if(typeof LOGO_PRETO_B64!=='undefined') doc.addImage(LOGO_PRETO_B64,'PNG',mL,9,17,17,undefined,'FAST'); }catch(e){}
+    doc.setFont('helvetica','bold');doc.setFontSize(16);doc.setTextColor(INK[0],INK[1],INK[2]);
+    doc.text('AUTORIZAÇÃO DE VENDAS',mL+22,16);
+    doc.setFont('helvetica','normal');doc.setFontSize(7.3);doc.setTextColor(GOLDd[0],GOLDd[1],GOLDd[2]);
+    doc.text('MUDE IMÓVEIS · INTERMEDIAÇÃO IMOBILIÁRIA',mL+22,21);
+    doc.setFontSize(6.8);doc.setTextColor(GRAY[0],GRAY[1],GRAY[2]);
+    doc.text('DOCUMENTO Nº',pw-mR,11,{align:'right'});
+    doc.setFont('helvetica','bold');doc.setFontSize(8);doc.setTextColor(INK[0],INK[1],INK[2]);
+    doc.text(pdfTxt(R.protocolo||'—'),pw-mR,14.8,{align:'right'});
+    doc.setFont('helvetica','normal');doc.setFontSize(6.8);doc.setTextColor(GRAY[0],GRAY[1],GRAY[2]);
+    doc.text('EMISSÃO',pw-mR,19,{align:'right'});
+    doc.setFontSize(8);doc.setTextColor(INK[0],INK[1],INK[2]);
+    doc.text(pdfTxt(R.dataHora||new Date().toLocaleString('pt-BR')),pw-mR,22.6,{align:'right'});
+    doc.setFontSize(6.8);doc.setTextColor(GOLDd[0],GOLDd[1],GOLDd[2]);
+    doc.text('CRECI/MS 6052-J',pw-mR,26.6,{align:'right'});
+    y=31;doc.setDrawColor(INK[0],INK[1],INK[2]);doc.setLineWidth(0.5);doc.line(mL,y,pw-mR,y);
+    doc.setDrawColor(GOLD[0],GOLD[1],GOLD[2]);doc.setLineWidth(0.5);doc.line(mL,y+0.9,mL+46,y+0.9);
+    y+=6.5;
+    doc.setFont('helvetica','italic');doc.setFontSize(9);doc.setTextColor(GRAY[0],GRAY[1],GRAY[2]);
+    doc.text('Instrumento particular de autorização de venda e intermediação imobiliária',mL,y);
+    y+=7;
+
+    /* ===== SEÇÕES ===== */
     grupos().forEach(g=>{
-      const title=pdfTxt((g.querySelector('h3')?g.querySelector('h3').textContent.trim():'')).toUpperCase();
-      if(y>bottom-12){doc.addPage();y=16;}
-      doc.setFont('helvetica','bold');doc.setFontSize(9.5);doc.setTextColor(160,126,62);
-      doc.text(title,mL,y);y+=1.6;
-      doc.setDrawColor(216,211,199);doc.setLineWidth(0.25);doc.line(mL,y,pw-mR,y);y+=4.2;
+      const rawTitle=pdfTxt((g.querySelector('h3')?g.querySelector('h3').textContent.trim():''));
+      const m=rawTitle.match(/^(\d+)\.\s*(.*)$/);
+      const num=m?m[1]:'';const name=(m?m[2]:rawTitle).toUpperCase();
+      ensure(15);
+      doc.setFillColor(GOLD[0],GOLD[1],GOLD[2]);doc.rect(mL,y-3.7,5,5,'F');
+      doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(8);
+      doc.text(num,mL+2.5,y-0.3,{align:'center'});
+      doc.setTextColor(INK[0],INK[1],INK[2]);doc.setFontSize(10.5);
+      doc.text(name,mL+7.5,y);
+      y+=2.3;doc.setDrawColor(LINE[0],LINE[1],LINE[2]);doc.setLineWidth(0.3);doc.line(mL,y,pw-mR,y);y+=4.4;
       doc.setFont('helvetica','normal');doc.setFontSize(9);
+      let alt=false;
       g.querySelectorAll('.sum-row').forEach(r=>{
         const k=pdfTxt(r.querySelector('.k').textContent.trim());
         const v=pdfTxt(r.querySelector('.v').textContent.trim());
-        const kLines=doc.splitTextToSize(k,kW-2);
-        const vLines=doc.splitTextToSize(v,usable-kW-2);
+        const kLines=doc.splitTextToSize(k,kW-3);
+        const vLines=doc.splitTextToSize(v,usable-kW-3);
         const rows=Math.max(kLines.length,vLines.length);
-        const rowH=rows*4.3+1.6;
-        if(y+rowH>bottom){doc.addPage();y=16;}
-        doc.setTextColor(110,110,110);doc.text(kLines,mL,y+3);
-        doc.setTextColor(25,25,25);doc.text(vLines,mL+kW,y+3);
+        const rowH=rows*4.3+2.6;
+        ensure(rowH);
+        if(alt){doc.setFillColor(SOFT[0],SOFT[1],SOFT[2]);doc.rect(mL,y-2.7,usable,rowH,'F');}
+        alt=!alt;
+        doc.setTextColor(GRAY[0],GRAY[1],GRAY[2]);doc.text(kLines,mL+1.5,y+0.7);
+        doc.setTextColor(INK[0],INK[1],INK[2]);doc.text(vLines,mL+kW+1.5,y+0.7);
         y+=rowH;
-        doc.setDrawColor(243,241,236);doc.setLineWidth(0.1);doc.line(mL,y-1,pw-mR,y-1);
       });
       g.querySelectorAll('.sum-para').forEach(pp=>{
         const ptxt=pdfTxt(pp.textContent.trim());
-        const pl=doc.splitTextToSize(ptxt,usable-1);
-        const ph=pl.length*4+2.5;
-        if(y+ph>bottom){doc.addPage();y=16;}
-        doc.setFont('helvetica','normal');doc.setFontSize(8.6);doc.setTextColor(70,70,70);
-        doc.text(pl,mL,y+3);
-        y+=ph;
+        const ref=pp.classList.contains('ref');
+        doc.setFont('helvetica',ref?'italic':'normal');doc.setFontSize(ref?7.6:8.7);
+        const pl=doc.splitTextToSize(ptxt,usable-2);
+        const lh=ref?3.6:4.3;
+        const ph2=pl.length*lh+3;
+        ensure(ph2);
+        const c=ref?130:60;doc.setTextColor(c,c,c);
+        doc.text(pl,mL,y+2);
+        y+=ph2;
       });
-      y+=4;
+      y+=4.5;
     });
-    if(y>bottom-10){doc.addPage();y=16;}
-    y+=1;doc.setDrawColor(216,211,199);doc.setLineWidth(0.3);doc.line(mL,y,pw-mR,y);y+=4;
-    doc.setFont('helvetica','normal');doc.setFontSize(7.5);doc.setTextColor(140,140,140);
-    doc.text('MRM Negócios e Consultorias Imobiliárias Ltda. · Mude Imóveis · CRECI/MS 6052-J · Dourados-MS',mL,y);y+=3.4;
-    doc.text('Autorização registrada eletronicamente em '+new Date().toLocaleString('pt-BR')+'. Mude que a Gente te Acompanha.',mL,y);
+
+    /* ===== ASSINATURAS ===== */
+    ensure(50);
+    y+=2;doc.setDrawColor(LINE[0],LINE[1],LINE[2]);doc.setLineWidth(0.3);doc.line(mL,y,pw-mR,y);y+=7;
+    const localData=(val('local_assin')||'Dourados/MS')+', '+(fmtDataBR(val('data_assin'))||new Date().toLocaleDateString('pt-BR'))+'.';
+    doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(INK[0],INK[1],INK[2]);
+    doc.text(pdfTxt(localData),mL,y);y+=17;
+    const colW=(usable-14)/2,sigY=y;
+    doc.setDrawColor(INK[0],INK[1],INK[2]);doc.setLineWidth(0.4);
+    doc.line(mL,sigY,mL+colW,sigY);doc.line(pw-mR-colW,sigY,pw-mR,sigY);
+    doc.setFont('helvetica','bold');doc.setFontSize(8.5);
+    doc.text('OUTORGANTE',mL,sigY+4.5);doc.text('OUTORGADA',pw-mR-colW,sigY+4.5);
+    doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(GRAY[0],GRAY[1],GRAY[2]);
+    doc.text(pdfTxt(val('prop_nome')||'Proprietário'),mL,sigY+9);
+    if(val('prop_cpf'))doc.text('CPF/CNPJ '+pdfTxt(val('prop_cpf')),mL,sigY+12.6);
+    doc.text('MRM Negócios e Consult. Imob. Ltda. — Mude Imóveis',pw-mR-colW,sigY+9);
+    doc.text('CRECI/MS 6052-J'+(val('corretor')?(' — '+pdfTxt(corretorLabel())):''),pw-mR-colW,sigY+12.6);
+    y=sigY+19;
+
+    /* ===== SELO DE AUTENTICIDADE ===== */
+    ensure(19);
+    doc.setFillColor(SOFT[0],SOFT[1],SOFT[2]);doc.setDrawColor(GOLD[0],GOLD[1],GOLD[2]);doc.setLineWidth(0.3);
+    doc.rect(mL,y,usable,16,'FD');
+    doc.setFont('helvetica','bold');doc.setFontSize(7.5);doc.setTextColor(GOLDd[0],GOLDd[1],GOLDd[2]);
+    doc.text('REGISTRO ELETRÔNICO DE AUTENTICIDADE',mL+3,y+4.6);
+    doc.setFont('helvetica','normal');doc.setFontSize(7);doc.setTextColor(80,80,80);
+    const selo='Documento gerado e registrado eletronicamente sob o protocolo '+pdfTxt(R.protocolo||'—')+', em '+pdfTxt(R.dataHora||'')+'. Origem do acesso: IP '+pdfTxt(R.ip||'—')+' · '+pdfTxt(R.disp||'—')+'. Validade jurídica amparada pela manifestação de vontade e pelo registro de acesso (Marco Civil da Internet, art. 10).';
+    doc.text(doc.splitTextToSize(selo,usable-6),mL+3,y+8.6);
+
+    /* ===== RODAPÉ (todas as páginas) ===== */
+    const N=doc.getNumberOfPages();
+    for(let i=1;i<=N;i++){
+      doc.setPage(i);
+      doc.setDrawColor(GOLD[0],GOLD[1],GOLD[2]);doc.setLineWidth(0.4);doc.line(mL,footY,pw-mR,footY);
+      doc.setFont('helvetica','normal');doc.setFontSize(7);doc.setTextColor(140,140,140);
+      doc.text('MRM Negócios e Consultorias Imobiliárias Ltda. · Mude Imóveis · CRECI/MS 6052-J · Dourados-MS',mL,footY+4);
+      doc.text('Página '+i+' de '+N,pw-mR,footY+4,{align:'right'});
+      doc.setTextColor(GOLDd[0],GOLDd[1],GOLDd[2]);
+      doc.text('Mude que a Gente te Acompanha.',mL,footY+7.6);
+      if(R.protocolo)doc.text(pdfTxt(R.protocolo),pw-mR,footY+7.6,{align:'right'});
+    }
+
     if(baixar)doc.save('Autorizacao-Mude-'+nomeArq()+'.pdf');
-    return doc.output('datauristring'); // data URI completo (EmailJS reconhece como anexo)
+    return doc.output('datauristring');
   }catch(e){console.error('Erro PDF',e); if(baixar)window.baixarPDFprint(); return null;}
 }
 window.baixarPDFprint=()=>{const w=window.open('','_blank');if(!w){alert('Permita pop-ups para gerar o PDF.');return;}w.document.write(fichaHTML());w.document.close();setTimeout(()=>{try{w.focus();w.print();}catch(e){}},500);};
