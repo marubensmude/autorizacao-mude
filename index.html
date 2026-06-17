@@ -1476,7 +1476,7 @@ function buildSummary(){
   </div>
   <div class="note" style="margin-top:8px">
     ${svg(I.seal)}
-    <span><b>Pronto para o CRM.</b> Ao concluir, a Autorização é enviada à Mude Imóveis (${EMAIL_MUDE}) com o relatório formatado e os anexos <b>PDF</b> e <b>Word</b>. Se desejar guardar uma cópia, use o botão <b>Baixar PDF</b>. Apenas as informações preenchidas constam no documento.</span>
+    <span><b>Pronto para o CRM.</b> Ao concluir, a Autorização é enviada à Mude Imóveis (${EMAIL_MUDE}) com o documento completo já formatado no corpo do e-mail, incluindo o registro eletrônico de autenticidade. Se desejar guardar uma cópia, use o botão <b>Baixar PDF</b>. Apenas as informações preenchidas constam no documento.</span>
   </div>
   <div class="nav" style="flex-wrap:wrap;gap:10px">
     <button type="button" class="btn btn-ghost" onclick="goTo(7)">← Voltar e editar</button>
@@ -1749,9 +1749,6 @@ window.finalizar=async()=>{
     return;
   }
   if(btn){btn.disabled=true;btn.dataset.txt=btn.innerHTML;btn.innerHTML='Enviando…';}
-  // gera o anexo Word SEM baixar (no celular, baixar durante o envio atrapalha)
-  let word64=null;
-  try{ word64=gerarWordDoc(false); }catch(e){console.error('Word',e);}
   const base={
     cliente: val('prop_nome')||'Cliente',
     tipo: (TIPOS.find(t=>t.id===val('tipo'))||{}).nome||'',
@@ -1763,18 +1760,12 @@ window.finalizar=async()=>{
   };
   const restore=()=>{if(btn){btn.disabled=false;btn.innerHTML=btn.dataset.txt;}};
   try{
-    await emailjs.send(EMAILJS_CFG.service,EMAILJS_CFG.template,Object.assign({},base,{content_word:word64||''}));
-    alert('✅ Autorização enviada com sucesso à Mude Imóveis!\n\nE-mail entregue em '+EMAIL_MUDE+', formatado e com o arquivo Word anexado.\n\nSe quiser guardar uma cópia em PDF, use o botão "Baixar PDF".\n\nMude que a Gente te Acompanha.');
+    await emailjs.send(EMAILJS_CFG.service,EMAILJS_CFG.template,base);
+    alert('✅ Autorização enviada com sucesso à Mude Imóveis!\n\nO documento completo da Autorização de Vendas foi entregue em '+EMAIL_MUDE+', já formatado no corpo do e-mail e com o registro eletrônico de autenticidade.\n\nSe quiser guardar uma cópia, use o botão "Baixar PDF".\n\nMude que a Gente te Acompanha.');
     restore();return;
-  }catch(err1){
-    console.error('Falha com anexo Word:',err1);
-    try{
-      await emailjs.send(EMAILJS_CFG.service,EMAILJS_CFG.template,base);
-      alert('⚠️ Autorização enviada à Mude Imóveis (somente no corpo do e-mail).\n\nO anexo Word NÃO foi aceito pelo serviço de envio.\nMotivo técnico: '+errMsg(err1)+'\n\nO relatório completo foi entregue em '+EMAIL_MUDE+'.\n\nMude que a Gente te Acompanha.');
-    }catch(err2){
-      console.error('Falha sem anexos:',err2);
-      alert('❌ Não foi possível enviar automaticamente.\n\nMotivo: '+errMsg(err2)+'\n\nTente novamente. Se continuar, me mande exatamente esta mensagem que eu ajusto.');
-    }
+  }catch(err){
+    console.error('Falha no envio:',err);
+    alert('❌ Não foi possível enviar automaticamente.\n\nMotivo técnico: '+errMsg(err)+'\n\nVerifique a conexão e tente novamente em instantes. Se persistir, me envie exatamente esta mensagem.');
   }
   restore();
 };
