@@ -574,6 +574,14 @@ footer.inst b{color:var(--grafite);font-weight:400}
             <div class="choices" id="condicaoChoices" data-radio="condicao"></div>
             <div class="err-msg" style="display:none">Selecione uma opção.</div>
           </div>
+          <div class="field third">
+            <label>Ano de construção<span class="hint">Ano de conclusão da obra. Deixe em branco se não souber.</span></label>
+            <input type="text" name="ano_constr" id="anoConstr" inputmode="numeric" placeholder="Ex.: 2015" data-mask="numero">
+          </div>
+          <div class="field third" id="idadeWrap" style="display:none">
+            <label>Idade do imóvel</label>
+            <input type="text" name="ano_idade" id="anoIdade" readonly placeholder="—" style="color:var(--cinza)">
+          </div>
         </div>
         <div id="dynamicFields" style="margin-top:18px"></div>
         <div class="grid" style="margin-top:18px">
@@ -602,6 +610,18 @@ footer.inst b{color:var(--grafite);font-weight:400}
           <div class="field">
             <label id="comissaoLabel">Comissão de intermediação<span class="req">*</span></label>
             <div class="prefix"><input type="text" name="comissao" id="comissaoInput" value="5% sobre o valor efetivamente vendido" readonly style="padding-left:13px;color:var(--cinza)"></div>
+          </div>
+          <div class="field third">
+            <label>Valor do condomínio<span class="hint">Mensal, se houver.</span></label>
+            <div class="prefix"><span class="pf">R$</span><input type="text" name="cond_valor" inputmode="numeric" placeholder="0,00" data-mask="moeda"></div>
+          </div>
+          <div class="field third">
+            <label>Valor do IPTU</label>
+            <div class="prefix"><span class="pf">R$</span><input type="text" name="iptu_valor" inputmode="numeric" placeholder="0,00" data-mask="moeda"></div>
+          </div>
+          <div class="field third">
+            <label>Periodicidade do IPTU</label>
+            <select name="iptu_periodo"><option value="">Selecione</option><option>Mensal</option><option>Anual</option></select>
           </div>
           <div class="field full">
             <label>Formas de pagamento aceitas <span class="hint">Selecione todas as que se aplicam.</span></label>
@@ -803,6 +823,44 @@ footer.inst b{color:var(--grafite);font-weight:400}
               <label class="pill"><input type="radio" name="notificado" value="Não"><span class="dot"></span>Ainda não</label>
             </div>
           </div>
+
+          <div class="section-label full">Chaves e utilidades <span class="crm-tag">CRM</span></div>
+          <div class="field">
+            <label>Chaves disponíveis?</label>
+            <div class="choices" data-radio="chaves_disp">
+              <label class="pill"><input type="radio" name="chaves_disp" value="Sim"><span class="dot"></span>Sim</label>
+              <label class="pill"><input type="radio" name="chaves_disp" value="Não"><span class="dot"></span>Não</label>
+            </div>
+          </div>
+          <div class="field" id="chaveLocalWrap" style="display:none">
+            <label>Local da chave</label>
+            <select name="chave_local" id="chaveLocal">
+              <option value="">Selecione</option>
+              <option>Na Mude</option>
+              <option>Proprietário</option>
+              <option>Portaria</option>
+              <option>Corretor</option>
+              <option>Outro</option>
+            </select>
+          </div>
+          <div class="field full" id="chaveObsWrap" style="display:none">
+            <label>Informações extras sobre a chave</label>
+            <input type="text" name="chave_obs" placeholder="Ex.: chave reserva com o zelador; combinar retirada com 1 dia de antecedência...">
+          </div>
+          <div class="field">
+            <label>Energia elétrica</label>
+            <div class="choices" data-radio="energia_status">
+              <label class="pill"><input type="radio" name="energia_status" value="Ligada"><span class="dot"></span>Ligada</label>
+              <label class="pill"><input type="radio" name="energia_status" value="Desligada"><span class="dot"></span>Desligada</label>
+            </div>
+          </div>
+          <div class="field">
+            <label>Água</label>
+            <div class="choices" data-radio="agua_status">
+              <label class="pill"><input type="radio" name="agua_status" value="Ligada"><span class="dot"></span>Ligada</label>
+              <label class="pill"><input type="radio" name="agua_status" value="Desligada"><span class="dot"></span>Desligada</label>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -941,7 +999,7 @@ const padraoOpts=['Selecione','Popular','Médio padrão','Alto padrão','Super a
 const DYN={
   casa:()=>wrap(
     sec('Medidas e composição')+
-    num('area_terreno','Área do terreno (m²)','360')+num('area_const','Área construída (m²)','245')+num('ano','Ano de construção','')+
+    num('area_terreno','Área do terreno (m²)','360')+num('area_const','Área construída (m²)','245')+
     num('quartos','Quartos','3')+num('suites','Suítes','2')+num('banheiros','Banheiros','3')+
     num('vagas','Vagas de garagem','2')+sel('padrao','Padrão construtivo',padraoOpts)+sel('mobiliado','Mobiliado',['Selecione','Não','Semimobiliado','Mobiliado'])+
     amen('amen',['Suíte master','Closet','Piscina','Churrasqueira','Área gourmet','Ar-condicionado','Armários embutidos','Aquecimento solar','Energia solar','Hidromassagem','Home theater','Adega','Jardim','Lavabo','Escritório','Portão eletrônico','Alarme/segurança','Quintal amplo'])
@@ -950,14 +1008,14 @@ const DYN={
     sec('Medidas e composição')+
     num('area_util','Área útil (m²)','120')+num('area_total','Área total (m²)','150')+num('andar','Andar','')+
     num('quartos','Quartos','3')+num('suites','Suítes','1')+num('vagas','Vagas','2')+
-    money('cond','Valor do condomínio')+num('andares','Andares do edifício','')+sel('mobiliado','Mobiliado',['Selecione','Não','Semimobiliado','Mobiliado'])+
+    num('andares','Andares do edifício','')+sel('mobiliado','Mobiliado',['Selecione','Não','Semimobiliado','Mobiliado'])+
     amen('amen',['Elevador','Varanda gourmet','Sacada','Ar-condicionado','Armários embutidos','Lazer completo','Academia','Piscina','Salão de festas','Portaria 24h','Playground','Adega','Hidromassagem','2 por andar','Nascente/sol da manhã','Andar alto'])
   ),
   terreno:()=>wrap(
     sec('Dimensões e características')+
     num('area','Área do terreno (m²)','450')+num('frente','Frente (m)','15')+num('fundo','Fundo (m)','30')+
     sel('topografia','Topografia',['Selecione','Plano','Aclive','Declive','Irregular'])+sel('esquina','Posição',['Selecione','Meio de quadra','Esquina'])+sel('murado','Murado',['Selecione','Sim','Não','Parcial'])+
-    sel('zona','Zoneamento',['Selecione','Residencial','Comercial','Misto','Industrial','Rural'])+sel('condominio','Em condomínio fechado?',['Selecione','Não','Sim'])+money('cond','Valor do condomínio')+
+    sel('zona','Zoneamento',['Selecione','Residencial','Comercial','Misto','Industrial','Rural'])+sel('condominio','Em condomínio fechado?',['Selecione','Não','Sim'])+
     amen('amen',['Pronto para construir','Documentação ok','Aterrado','Água/esgoto','Energia na rua','Próximo a área nobre'])
   ),
   comercial:()=>wrap(
@@ -970,7 +1028,7 @@ const DYN={
   sala:()=>wrap(
     sec('Características da sala comercial')+
     num('area_util','Área útil (m²)','')+num('andar','Andar','')+num('vagas','Vagas','')+
-    money('cond','Condomínio')+sel('banheiro','Banheiro privativo',['Selecione','Sim','Não'])+sel('divisorias','Divisórias',['Selecione','Sim','Não','Planta livre'])+
+    sel('banheiro','Banheiro privativo',['Selecione','Sim','Não'])+sel('divisorias','Divisórias',['Selecione','Sim','Não','Planta livre'])+
     num('edificio','Edifício / Centro empresarial','')+
     amen('amen',['Elevador','Ar-condicionado','Recepção do edifício','Segurança 24h','Mobiliada','Vista','Pronta para uso'])
   ),
@@ -1192,9 +1250,21 @@ function condicionais(){
   const pd=$('#prazoDesoc');
   show('prazoMesesWrap',isOcup&&pd&&pd.value==='Outra data');
   show('notifWrap',oc&&(oc.value==='Ocupado com Inquilino'||oc.value==='Ocupado (outros)'));
+  // chaves disponíveis
+  const chv=$('input[name=chaves_disp]:checked');const temChave=(chv&&chv.value==='Sim');
+  show('chaveLocalWrap',temChave);show('chaveObsWrap',temChave);
+  // idade do imóvel (calculada a partir do ano de construção)
+  const ac=$('#anoConstr'),ai=$('#anoIdade');
+  if(ac&&ai){
+    const a=parseInt((ac.value||'').replace(/\D/g,''),10);const yr=new Date().getFullYear();
+    if(a&&a>=1900&&a<=yr){const d=yr-a;ai.value=(d===0?'menos de 1 ano':d+(d===1?' ano':' anos'));show('idadeWrap',true);}
+    else{ai.value='';show('idadeWrap',false);}
+  }
 }
 ['condSelect','prazoDesoc','parcIndex'].forEach(id=>{const e=$('#'+id);if(e)e.addEventListener('change',condicionais);});
 const prazoSelEl=$('select[name=prazo]');if(prazoSelEl)prazoSelEl.addEventListener('change',condicionais);
+const anoConstrEl=$('#anoConstr');if(anoConstrEl)anoConstrEl.addEventListener('input',condicionais);
+const chaveLocalEl=$('#chaveLocal');if(chaveLocalEl)chaveLocalEl.addEventListener('change',condicionais);
 
 /* ============ MÁSCARAS ============ */
 function fmtCPF(v){return v.slice(0,11).replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})$/,'$1-$2');}
@@ -1437,7 +1507,7 @@ function buildSummary(){
   </div>
   <div class="sum-group">
     <h3>${svg(I.list)} 4. Características</h3>
-    ${row('Condição / Localização',radio('condicao'))}${dyn}${row('Diferenciais',dynAmen)}
+    ${row('Condição / Localização',radio('condicao'))}${row('Ano de construção',val('ano_constr'))}${row('Idade do imóvel',val('ano_idade'))}${dyn}${row('Diferenciais',dynAmen)}
   </div>
   <div class="sum-group">
     <h3>${svg(I.doc)} 5. Observações do imóvel</h3>
@@ -1448,6 +1518,7 @@ function buildSummary(){
   <div class="sum-group">
     <h3>${svg(I.tag)} 6. Condições comerciais</h3>
     ${row('Valor pretendido','R$ '+val('valor'))}${row('Comissão',val('comissao'))}
+    ${row('Valor do condomínio',val('cond_valor')?'R$ '+val('cond_valor'):'')}${row('IPTU',val('iptu_valor')?('R$ '+val('iptu_valor')+(val('iptu_periodo')?(' ('+val('iptu_periodo').toLowerCase()+')'):'')):'')}
     ${row('Pagamento',checks('pagamento'))}${row('Permuta',val('permuta_det'))}
     ${row('Entrada (parcelamento)',val('parc_entrada')?'R$ '+val('parc_entrada'):'')}${row('Nº de parcelas',val('parc_num'))}${row('Periodicidade',val('parc_period'))}${row('Indexação',val('parc_index')==='Outro grão / índice'?val('parc_index_outro'):val('parc_index'))}
     ${row('Urgência',radio('urgencia'))}${row('Negociação',radio('negocia'))}
@@ -1463,6 +1534,8 @@ function buildSummary(){
     ${row('Situação da escritura',val('situacao_escritura'))}${row('Escritura no nome',radio('escritura'))}${row('Ônus/financiamento',radio('onus'))}
     ${row('Situação documental',val('doc_situacao'))}${row('Ocupação',radio('ocupacao'))}
     ${row('Prazo desocupação',val('prazo_desoc'))}${row('Meses necessários',val('prazo_meses'))}${row('Inquilino notificado',radio('notificado'))}
+    ${row('Chaves disponíveis',radio('chaves_disp'))}${row('Local da chave',val('chave_local'))}${row('Informações sobre a chave',val('chave_obs'))}
+    ${row('Energia elétrica',radio('energia_status'))}${row('Água',radio('agua_status'))}
   </div>
   <div class="sum-group">
     <h3>${svg(I.seal)} 9. Termo de autorização e fundamentos legais</h3>
