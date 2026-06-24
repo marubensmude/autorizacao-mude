@@ -78,7 +78,7 @@ textarea{min-height:80px;resize:vertical}
     <div class="grid">
       <div class="full"><label class="req">Nome completo / Razão social</label><input id="p_nome" placeholder="Nome do proprietário"></div>
       <div><label>Tipo de pessoa</label><select id="p_tp"><option value="PF">Pessoa Física (CPF)</option><option value="PJ">Pessoa Jurídica (CNPJ)</option></select></div>
-      <div><label>CPF / CNPJ</label><input id="p_doc" placeholder="Somente números ou formatado"></div>
+      <div><label class="req">CPF / CNPJ</label><input id="p_doc" placeholder="Somente números ou formatado"></div>
       <div><label class="req">E-mail</label><input id="p_email" type="email" placeholder="email@exemplo.com"></div>
       <div><label class="req">Telefone / WhatsApp</label><input id="p_tel" placeholder="(67) 90000-0000"></div>
     </div>
@@ -195,7 +195,7 @@ function coletar(){
     prop: {
       nome: check("p_nome","Nome do proprietário"),
       tp: val("p_tp"),
-      doc: val("p_doc"),
+      doc: check("p_doc","CPF / CNPJ"),
       email: check("p_email","E-mail"),
       tel: check("p_tel","Telefone")
     },
