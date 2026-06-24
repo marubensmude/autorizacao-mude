@@ -173,7 +173,7 @@ function linha(k,v){ return '<div class="row"><span class="k">'+esc(k)+'</span><
 
 function endereco(i){
   var p = [];
-  if(i.log) p.push(i.log + (i.num ? ", "+i.num : ""));
+  if(i.log) p.push(i.log + (i.num ? ", "+i.num : "") + (i.comp ? ", "+i.comp : ""));
   if(i.bairro) p.push(i.bairro);
   if(i.cidade) p.push(i.cidade);
   if(i.cep) p.push("CEP "+i.cep);

@@ -99,6 +99,7 @@ textarea{min-height:80px;resize:vertical}
       <div><label class="req">Valor de venda (R$)</label><input id="i_valor" inputmode="numeric" placeholder="Ex.: 850.000"></div>
       <div><label class="req">Logradouro</label><input id="i_log" placeholder="Rua / Av."></div>
       <div><label>Número</label><input id="i_num" placeholder="Nº"></div>
+      <div><label>Complemento</label><input id="i_comp" placeholder="Ex.: Apto 103, Sala 202, Bloco B"></div>
       <div><label class="req">Bairro</label><input id="i_bairro" placeholder="Bairro"></div>
       <div><label>Cidade / UF</label><input id="i_cidade" value="Dourados/MS"></div>
       <div class="full"><label>CEP (opcional)</label><input id="i_cep" placeholder="79.800-000"></div>
@@ -203,6 +204,7 @@ function coletar(){
       valor: check("i_valor","Valor de venda"),
       log: check("i_log","Logradouro"),
       num: val("i_num"),
+      comp: val("i_comp"),
       bairro: check("i_bairro","Bairro"),
       cidade: val("i_cidade"),
       cep: val("i_cep")
