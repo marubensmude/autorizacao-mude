@@ -239,8 +239,12 @@ function gerar(){
 
 function mensagemWa(){
   var nome = (val("p_nome").split(" ")[0]) || "";
-  return "Olá " + nome + ", tudo bem? Para concluir a autorização de venda do seu imóvel com a Mude Imóveis, "
-       + "é só abrir o link abaixo, conferir os dados e tocar em \"Autorizo a venda\". Leva menos de um minuto:\n\n"
+  var saud = nome ? ("Olá, " + nome + ". ") : "Olá. ";
+  return saud
+       + "Aqui é da Mude Imóveis. Para concluir a autorização de venda do seu imóvel, preparei tudo para facilitar: "
+       + "é só abrir o link abaixo, conferir os dados e tocar em \"Autorizo a venda\". "
+       + "Leva menos de um minuto e fica tudo registrado com segurança. "
+       + "Qualquer ajuste, me avise antes de confirmar.\n\n"
        + ultimoLink;
 }
 
