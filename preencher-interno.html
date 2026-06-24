@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Mude Imóveis · Preenchimento Interno de Autorização</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.min.js"></script>
+<style>
+:root{
+  --preto:#111111; --dourado:#b8924f; --dourado-claro:#d8b878;
+  --branco:#ffffff; --cinza:#f5f3ef; --cinza-borda:#e4ded3; --texto:#2a2a2a; --suave:#7a7468;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Jost',sans-serif;background:var(--cinza);color:var(--texto);line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:780px;margin:0 auto;padding:28px 18px 80px}
+header.topo{text-align:center;padding:22px 0 10px}
+header.topo .marca{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:700;color:var(--preto);letter-spacing:.5px}
+header.topo .marca b{color:var(--dourado)}
+header.topo .sub{font-size:12.5px;letter-spacing:3px;text-transform:uppercase;color:var(--suave);margin-top:4px}
+.tag{display:inline-block;margin-top:14px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--dourado);border:1px solid var(--cinza-borda);background:var(--branco);padding:6px 14px;border-radius:999px}
+.card{background:var(--branco);border:1px solid var(--cinza-borda);border-radius:14px;padding:26px 24px;margin-top:22px;box-shadow:0 8px 30px rgba(17,17,17,.04)}
+h2{font-family:'Cormorant Garamond',serif;font-size:23px;font-weight:600;color:var(--preto);margin-bottom:4px}
+h2 .num{color:var(--dourado);font-weight:700;margin-right:8px}
+.secdesc{font-size:13.5px;color:var(--suave);margin-bottom:18px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 16px}
+.full{grid-column:1/-1}
+label{display:block;font-size:12.5px;letter-spacing:.4px;color:var(--suave);margin-bottom:5px;font-weight:500}
+.req::after{content:" *";color:var(--dourado)}
+input,select,textarea{width:100%;font-family:'Jost',sans-serif;font-size:15px;color:var(--texto);background:var(--cinza);border:1px solid var(--cinza-borda);border-radius:9px;padding:11px 12px;transition:border .15s,background .15s}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--dourado);background:var(--branco)}
+textarea{min-height:80px;resize:vertical}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:'Jost',sans-serif;font-size:14.5px;font-weight:500;letter-spacing:.5px;border:none;border-radius:10px;padding:14px 22px;cursor:pointer;transition:transform .08s,opacity .15s}
+.btn:active{transform:translateY(1px)}
+.btn-ouro{background:var(--preto);color:var(--dourado-claro);width:100%;font-size:16px;padding:16px}
+.btn-ouro:hover{opacity:.92}
+.btn-sec{background:var(--branco);color:var(--preto);border:1px solid var(--cinza-borda)}
+.btn-sec:hover{border-color:var(--dourado)}
+.acoes{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.linkbox{background:var(--cinza);border:1px dashed var(--dourado);border-radius:10px;padding:13px;font-size:12.5px;word-break:break-all;color:var(--suave);margin-top:8px}
+.gate{position:fixed;inset:0;background:var(--preto);display:flex;align-items:center;justify-content:center;z-index:50;flex-direction:column;padding:24px}
+.gate .marca{font-family:'Cormorant Garamond',serif;font-size:40px;color:var(--branco);font-weight:700}
+.gate .marca b{color:var(--dourado)}
+.gate p{color:#bbb;font-size:13px;letter-spacing:2px;text-transform:uppercase;margin:6px 0 26px}
+.gate input{max-width:300px;text-align:center;background:#1c1c1c;border-color:#333;color:#fff}
+.gate .btn{max-width:300px;width:100%;margin-top:12px}
+.gate .err{color:#e0a0a0;font-size:13px;min-height:18px;margin-top:10px}
+.hide{display:none!important}
+.foot{text-align:center;font-size:11.5px;color:var(--suave);margin-top:34px;letter-spacing:.5px}
+.foot b{font-family:'Cormorant Garamond',serif;color:var(--preto);font-size:14px}
+@media(max-width:600px){.grid{grid-template-columns:1fr}.acoes{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- ======= TRAVA DE ACESSO INTERNO ======= -->
+<div class="gate" id="gate">
+  <div class="marca">Mude<b>.</b></div>
+  <p>Área interna</p>
+  <input type="password" id="senha" placeholder="Senha de acesso" autocomplete="off">
+  <button class="btn btn-ouro" id="btnEntrar">Entrar</button>
+  <div class="err" id="gateErr"></div>
+</div>
+
+<div class="wrap hide" id="app">
+  <header class="topo">
+    <div class="marca">Mude<b> Imóveis</b></div>
+    <div class="sub">Autorização de Vendas</div>
+    <div class="tag">Preenchimento interno · gerar link de aceite</div>
+  </header>
+
+  <div class="card">
+    <h2><span class="num">1</span>Proprietário (Outorgante)</h2>
+    <div class="secdesc">Dados de quem autoriza a venda. Estes dados aparecem na autorização que o cliente vai conferir e aceitar.</div>
+    <div class="grid">
+      <div class="full"><label class="req">Nome completo / Razão social</label><input id="p_nome" placeholder="Nome do proprietário"></div>
+      <div><label>Tipo de pessoa</label><select id="p_tp"><option value="PF">Pessoa Física (CPF)</option><option value="PJ">Pessoa Jurídica (CNPJ)</option></select></div>
+      <div><label>CPF / CNPJ</label><input id="p_doc" placeholder="Somente números ou formatado"></div>
+      <div><label class="req">E-mail</label><input id="p_email" type="email" placeholder="email@exemplo.com"></div>
+      <div><label class="req">Telefone / WhatsApp</label><input id="p_tel" placeholder="(67) 90000-0000"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">2</span>Imóvel</h2>
+    <div class="secdesc">Dados mínimos para identificar e precificar o imóvel autorizado.</div>
+    <div class="grid">
+      <div><label class="req">Tipo de imóvel</label>
+        <select id="i_tipo">
+          <option value="">Selecione</option>
+          <option>Casa</option><option>Apartamento</option><option>Terreno</option>
+          <option>Imóvel comercial</option><option>Sala comercial</option><option>Ponto comercial</option>
+          <option>Sítio</option><option>Chácara</option><option>Pesqueiro</option><option>Fazenda</option>
+        </select>
+      </div>
+      <div><label class="req">Valor de venda (R$)</label><input id="i_valor" inputmode="numeric" placeholder="Ex.: 850.000"></div>
+      <div><label class="req">Logradouro</label><input id="i_log" placeholder="Rua / Av."></div>
+      <div><label>Número</label><input id="i_num" placeholder="Nº"></div>
+      <div><label class="req">Bairro</label><input id="i_bairro" placeholder="Bairro"></div>
+      <div><label>Cidade / UF</label><input id="i_cidade" value="Dourados/MS"></div>
+      <div class="full"><label>CEP (opcional)</label><input id="i_cep" placeholder="79.800-000"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">3</span>Condições comerciais</h2>
+    <div class="secdesc">Parâmetros da intermediação. Padrão Mude já preenchido; ajuste se necessário.</div>
+    <div class="grid">
+      <div><label>Comissão (%)</label><input id="c_com" value="5"></div>
+      <div><label>Exclusividade</label><select id="c_excl"><option value="sim">Com exclusividade</option><option value="nao">Sem exclusividade</option></select></div>
+      <div><label>Prazo da autorização</label>
+        <select id="c_prazo">
+          <option>30 dias</option><option>60 dias</option><option>90 dias</option>
+          <option selected>180 dias</option><option>365 dias</option><option>Até a venda</option>
+        </select>
+      </div>
+      <div><label class="req">Corretor responsável</label>
+        <select id="c_corr">
+          <option>Mário Rubens</option><option>Paulo Maioque</option><option>Camila</option>
+          <option>Caio</option><option>João Victor</option><option>Leonardo</option>
+          <option>Mariucia</option><option>Marcus Luiz</option><option>Mariley</option>
+        </select>
+      </div>
+      <div class="full"><label>Observações (opcional)</label><textarea id="c_obs" placeholder="Diferenciais, condições especiais, recados ao cliente..."></textarea></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">4</span>Gerar link de aceite</h2>
+    <div class="secdesc">O link leva o cliente direto para a autorização preenchida. Ele só confere e aceita; o documento volta para o seu e-mail com o registro de IP.</div>
+    <button class="btn btn-ouro" id="btnGerar">Gerar link de aceite</button>
+    <div id="resultado" class="hide">
+      <div class="linkbox" id="linkOut"></div>
+      <div class="acoes">
+        <button class="btn btn-sec" id="btnCopiar">Copiar link</button>
+        <button class="btn btn-sec" id="btnWa">Enviar no WhatsApp</button>
+        <button class="btn btn-sec" id="btnPreview">Pré-visualizar (como o cliente vê)</button>
+        <button class="btn btn-sec" id="btnNovo">Nova autorização</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <b>Mude Imóveis</b><br>Mude que a Gente te Acompanha.
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   PREENCHIMENTO INTERNO — gera link de aceite (sem backend)
+   NÃO altera nada do sistema atual. Arquivo independente.
+   ============================================================ */
+
+/* Senha de acesso interno. Troque por uma de sua preferência. */
+var SENHA_INTERNA = "mude2026";
+
+/* Endereço PÚBLICO do site (GitHub Pages). Confira/edite se o seu repositório
+   usar outro caminho. É daqui que o link de aceite vai ser montado. */
+var SITE_BASE = "https://marubensmude.github.io/autorizacao-mude/";
+
+/* O link de aceite sempre sai com endereço público https (clicável no WhatsApp).
+   Se você abrir este arquivo localmente (file://) para testar, ele usa o SITE_BASE.
+   Se abrir já pelo site publicado, usa a própria pasta automaticamente. */
+var ACEITE_URL = (location.protocol === "file:")
+  ? SITE_BASE + "aceite.html"
+  : new URL("aceite.html", location.href).href;
+
+function $(id){ return document.getElementById(id); }
+
+/* ---- Trava de acesso ---- */
+function entrar(){
+  if($("senha").value === SENHA_INTERNA){
+    $("gate").classList.add("hide");
+    $("app").classList.remove("hide");
+  } else {
+    $("gateErr").textContent = "Senha incorreta.";
+  }
+}
+$("btnEntrar").addEventListener("click", entrar);
+$("senha").addEventListener("keydown", function(e){ if(e.key === "Enter") entrar(); });
+
+/* ---- Coleta e validação dos dados mínimos ---- */
+function val(id){ return ($(id).value || "").trim(); }
+
+function coletar(){
+  var faltando = [];
+  function check(id, nome){ if(!val(id)) faltando.push(nome); return val(id); }
+
+  var dados = {
+    v: 1,
+    prop: {
+      nome: check("p_nome","Nome do proprietário"),
+      tp: val("p_tp"),
+      doc: val("p_doc"),
+      email: check("p_email","E-mail"),
+      tel: check("p_tel","Telefone")
+    },
+    imo: {
+      tipo: check("i_tipo","Tipo de imóvel"),
+      valor: check("i_valor","Valor de venda"),
+      log: check("i_log","Logradouro"),
+      num: val("i_num"),
+      bairro: check("i_bairro","Bairro"),
+      cidade: val("i_cidade"),
+      cep: val("i_cep")
+    },
+    com: {
+      comissao: val("c_com") || "5",
+      excl: val("c_excl"),
+      prazo: val("c_prazo")
+    },
+    corr: val("c_corr"),
+    obs: val("c_obs"),
+    em: new Date().toISOString()
+  };
+  return { dados: dados, faltando: faltando };
+}
+
+/* ---- Geração do link ---- */
+var ultimoLink = "";
+
+function gerar(){
+  var r = coletar();
+  if(r.faltando.length){
+    alert("Preencha os campos obrigatórios:\n\n• " + r.faltando.join("\n• "));
+    return;
+  }
+  var json = JSON.stringify(r.dados);
+  var payload = LZString.compressToEncodedURIComponent(json);
+  ultimoLink = ACEITE_URL + "#a=" + payload;
+
+  $("linkOut").textContent = ultimoLink;
+  $("resultado").classList.remove("hide");
+  $("resultado").scrollIntoView({behavior:"smooth", block:"center"});
+}
+
+function mensagemWa(){
+  var nome = (val("p_nome").split(" ")[0]) || "";
+  return "Olá " + nome + ", tudo bem? Para concluir a autorização de venda do seu imóvel com a Mude Imóveis, "
+       + "é só abrir o link abaixo, conferir os dados e tocar em \"Autorizo a venda\". Leva menos de um minuto:\n\n"
+       + ultimoLink;
+}
+
+function telWa(){
+  var d = val("p_tel").replace(/\D/g,"");
+  if(!d) return "";
+  if(d.length <= 11) d = "55" + d; /* assume Brasil se vier sem o 55 */
+  return d;
+}
+
+$("btnGerar").addEventListener("click", gerar);
+
+$("btnCopiar").addEventListener("click", function(){
+  if(!ultimoLink) return;
+  navigator.clipboard.writeText(ultimoLink).then(
+    function(){ $("btnCopiar").textContent = "Link copiado ✓"; setTimeout(function(){ $("btnCopiar").textContent = "Copiar link"; },1800); },
+    function(){ alert("Copie manualmente o link acima."); }
+  );
+});
+
+$("btnWa").addEventListener("click", function(){
+  if(!ultimoLink) return;
+  var num = telWa();
+  var base = num ? ("https://wa.me/" + num + "?text=") : "https://wa.me/?text=";
+  window.open(base + encodeURIComponent(mensagemWa()), "_blank");
+});
+
+$("btnPreview").addEventListener("click", function(){
+  if(ultimoLink) window.open(ultimoLink, "_blank");
+});
+
+$("btnNovo").addEventListener("click", function(){
+  if(!confirm("Limpar o formulário para uma nova autorização?")) return;
+  document.querySelectorAll("input,textarea").forEach(function(el){
+    if(el.id === "senha") return;
+    if(el.id === "c_com"){ el.value = "5"; return; }
+    if(el.id === "i_cidade"){ el.value = "Dourados/MS"; return; }
+    el.value = "";
+  });
+  $("c_prazo").value = "180 dias";
+  $("resultado").classList.add("hide");
+  ultimoLink = "";
+  window.scrollTo({top:0, behavior:"smooth"});
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Mude Imóveis · Autorização de Venda</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<style>
+:root{
+  --preto:#111111; --dourado:#b8924f; --dourado-claro:#d8b878;
+  --branco:#ffffff; --cinza:#f5f3ef; --cinza-borda:#e4ded3; --texto:#2a2a2a; --suave:#7a7468;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Jost',sans-serif;background:var(--cinza);color:var(--texto);line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:760px;margin:0 auto;padding:26px 18px 80px}
+header.topo{text-align:center;padding:18px 0 4px}
+header.topo .marca{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:700;color:var(--preto)}
+header.topo .marca b{color:var(--dourado)}
+header.topo .sub{font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--suave);margin-top:4px}
+.tag{display:inline-block;margin-top:14px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--dourado);border:1px solid var(--cinza-borda);background:var(--branco);padding:6px 14px;border-radius:999px}
+.card{background:var(--branco);border:1px solid var(--cinza-borda);border-radius:14px;padding:24px 24px;margin-top:20px;box-shadow:0 8px 30px rgba(17,17,17,.04)}
+h2{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--preto);margin-bottom:14px;border-bottom:1px solid var(--cinza-borda);padding-bottom:8px}
+h2 .num{color:var(--dourado);font-weight:700;margin-right:8px}
+.row{display:flex;justify-content:space-between;gap:16px;padding:7px 0;border-bottom:1px dashed var(--cinza-borda);font-size:14.5px}
+.row:last-child{border-bottom:none}
+.row .k{color:var(--suave);flex:0 0 42%}
+.row .val{color:var(--texto);text-align:right;font-weight:500}
+.para{font-size:14px;color:var(--texto);text-align:justify;margin-top:6px}
+.legal{font-size:12.5px;color:var(--suave);margin-top:12px;text-align:justify;line-height:1.55}
+.consent{display:flex;gap:11px;align-items:flex-start;padding:11px 0;font-size:13.5px;color:var(--texto)}
+.consent input{margin-top:3px;width:18px;height:18px;accent-color:var(--dourado);flex:0 0 auto}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:'Jost',sans-serif;font-size:16px;font-weight:500;letter-spacing:.5px;border:none;border-radius:10px;padding:16px 22px;cursor:pointer;width:100%;transition:opacity .15s}
+.btn-ouro{background:var(--preto);color:var(--dourado-claro)}
+.btn-ouro:disabled{background:#ddd6c9;color:#fff;cursor:not-allowed}
+.btn-ouro:not(:disabled):hover{opacity:.92}
+.aviso{font-size:12.5px;color:var(--suave);text-align:center;margin-top:12px}
+.estado{text-align:center;padding:60px 20px}
+.estado .marca{font-family:'Cormorant Garamond',serif;font-size:42px;color:var(--preto);font-weight:700}
+.estado .marca b{color:var(--dourado)}
+.estado h3{font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--preto);margin:18px 0 8px}
+.estado p{color:var(--suave);font-size:15px;max-width:420px;margin:0 auto}
+.check-ok{width:74px;height:74px;border-radius:50%;background:var(--preto);color:var(--dourado-claro);display:flex;align-items:center;justify-content:center;font-size:38px;margin:0 auto 6px}
+.spin{width:40px;height:40px;border:3px solid var(--cinza-borda);border-top-color:var(--dourado);border-radius:50%;margin:0 auto 18px;animation:g 1s linear infinite}
+@keyframes g{to{transform:rotate(360deg)}}
+.hide{display:none!important}
+.foot{text-align:center;font-size:11.5px;color:var(--suave);margin-top:34px;letter-spacing:.5px}
+.foot b{font-family:'Cormorant Garamond',serif;color:var(--preto);font-size:14px}
+.regbox{background:var(--cinza);border-radius:10px;padding:14px;margin-top:6px;font-size:13px;color:var(--suave)}
+.regbox .row{font-size:13px}
+@media(max-width:600px){.row{font-size:13.5px}.row .k{flex:0 0 46%}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ESTADO: carregando -->
+  <div id="vCarregando" class="estado">
+    <div class="spin"></div>
+    <p>Carregando sua autorização...</p>
+  </div>
+
+  <!-- ESTADO: link inválido -->
+  <div id="vErro" class="estado hide">
+    <div class="marca">Mude<b>.</b></div>
+    <h3>Link inválido ou expirado</h3>
+    <p>Não conseguimos abrir os dados desta autorização. Peça à Mude Imóveis o envio de um novo link.</p>
+  </div>
+
+  <!-- ESTADO: documento para aceite -->
+  <div id="vDoc" class="hide">
+    <header class="topo">
+      <div class="marca">Mude<b> Imóveis</b></div>
+      <div class="sub">Autorização de Venda</div>
+      <div class="tag">Confira os dados e autorize</div>
+    </header>
+
+    <div class="card">
+      <h2><span class="num">1</span>Proprietário (Outorgante)</h2>
+      <div id="secProp"></div>
+    </div>
+
+    <div class="card">
+      <h2><span class="num">2</span>Imóvel</h2>
+      <div id="secImo"></div>
+    </div>
+
+    <div class="card">
+      <h2><span class="num">3</span>Condições da intermediação</h2>
+      <div id="secCom"></div>
+    </div>
+
+    <div class="card">
+      <h2><span class="num">4</span>Termo de autorização</h2>
+      <div id="secTermo"></div>
+    </div>
+
+    <div class="card">
+      <h2><span class="num">5</span>Consentimento e aceite</h2>
+      <label class="consent"><input type="checkbox" class="cs"><span>Declaro que li e estou de acordo com os termos da presente autorização de venda e com as condições comerciais aqui descritas.</span></label>
+      <label class="consent"><input type="checkbox" class="cs"><span>Autorizo o tratamento dos meus dados pela Mude Imóveis para fins desta intermediação, nos termos da LGPD (Lei 13.709/2018).</span></label>
+      <label class="consent"><input type="checkbox" class="cs"><span>Estou ciente de que este aceite eletrônico tem validade jurídica e que serão registrados meu IP, data, hora e dispositivo como prova do consentimento.</span></label>
+      <button class="btn btn-ouro" id="btnAceitar" disabled>Autorizo a venda</button>
+      <div class="aviso">Ao tocar em "Autorizo a venda", sua autorização é enviada imediatamente à Mude Imóveis.</div>
+    </div>
+
+    <div class="foot"><b>Mude Imóveis</b><br>Mude que a Gente te Acompanha.</div>
+  </div>
+
+  <!-- ESTADO: enviando -->
+  <div id="vEnviando" class="estado hide">
+    <div class="spin"></div>
+    <p>Registrando sua autorização com segurança...</p>
+  </div>
+
+  <!-- ESTADO: sucesso -->
+  <div id="vOk" class="estado hide">
+    <div class="check-ok">&#10003;</div>
+    <h3>Autorização registrada</h3>
+    <p>Sua autorização de venda foi enviada à Mude Imóveis com o devido registro. Em breve um especialista entrará em contato. Obrigado pela confiança.</p>
+    <div class="foot"><b>Mude Imóveis</b><br>Mude que a Gente te Acompanha.</div>
+  </div>
+
+</div>
+
+<script>
+/* ============================================================
+   PÁGINA DE ACEITE DO CLIENTE  (sem backend)
+   Reaproveita EmailJS + ipify do sistema atual. Independente.
+   ============================================================ */
+
+/* --- Credenciais EmailJS (as mesmas já em uso no sistema atual) --- */
+var EMAILJS_PUBLIC  = "lERCa0snZ7xZq0E5Y";
+var EMAILJS_SERVICE = "service_y3sqtti";
+var EMAILJS_TEMPLATE= "template_mc618f5";
+var DESTINO         = "mario@mudeimobiliaria.com.br";
+
+function $(id){ return document.getElementById(id); }
+function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function mostrar(id){ ["vCarregando","vErro","vDoc","vEnviando","vOk"].forEach(function(v){ $(v).classList.add("hide"); }); $(id).classList.remove("hide"); }
+
+/* --- Helpers de formatação --- */
+function moeda(v){
+  var n = String(v||"").replace(/[^\d]/g,"");
+  if(!n) return esc(v);
+  return "R$ " + Number(n).toLocaleString("pt-BR");
+}
+function prazoTxt(p){ return /venda/i.test(p) ? "até a efetivação da venda" : esc(p); }
+function exclTxt(e){ return e === "sim" ? "com exclusividade" : "sem exclusividade"; }
+function dataBR(){
+  var d = new Date();
+  function z(n){ return (n<10?"0":"")+n; }
+  return z(d.getDate())+"/"+z(d.getMonth()+1)+"/"+d.getFullYear()+" às "+z(d.getHours())+":"+z(d.getMinutes());
+}
+
+/* --- Decodifica os dados do link --- */
+var DADOS = null;
+try {
+  var h = location.hash || "";
+  var m = h.match(/[#&]a=([^&]+)/);
+  if(m){
+    var json = LZString.decompressFromEncodedURIComponent(m[1]);
+    DADOS = JSON.parse(json);
+  }
+} catch(e){ DADOS = null; }
+
+/* --- Render do documento --- */
+function linha(k,v){ return '<div class="row"><span class="k">'+esc(k)+'</span><span class="val">'+esc(v)+'</span></div>'; }
+
+function endereco(i){
+  var p = [];
+  if(i.log) p.push(i.log + (i.num ? ", "+i.num : ""));
+  if(i.bairro) p.push(i.bairro);
+  if(i.cidade) p.push(i.cidade);
+  if(i.cep) p.push("CEP "+i.cep);
+  return p.join(" · ");
+}
+
+function termoHTML(d){
+  var comissao = (d.com.comissao||"5") + "%";
+  var t = "O(a) proprietário(a) acima qualificado(a), na condição de OUTORGANTE, autoriza a "
+    + "<b>MRM Negócios e Consultorias Imobiliárias Ltda. (Mude Imóveis)</b>, inscrita no CRECI/MS sob o nº 6052-J, "
+    + "na condição de OUTORGADA, a promover e intermediar a venda do imóvel acima descrito, "
+    + exclTxt(d.com.excl) + ", pelo prazo de " + prazoTxt(d.com.prazo) + ", "
+    + "mediante comissão de " + esc(comissao) + " sobre o valor efetivo da venda, "
+    + "ficando a OUTORGADA autorizada a anunciar, divulgar e apresentar o imóvel a interessados, "
+    + "agendar e realizar visitas e adotar as providências comerciais cabíveis à concretização do negócio.";
+  var legal = "Esta autorização observa a Lei nº 6.530/1978 e o Decreto nº 81.871/1978 (exercício da profissão de corretor de imóveis), "
+    + "a Resolução COFECI nº 1.404/2018, os artigos 722 a 729 do Código Civil (contrato de corretagem) "
+    + "e a Lei nº 13.709/2018 (LGPD). O aceite eletrônico e o respectivo registro de acesso têm fundamento no "
+    + "art. 10 da Lei nº 12.965/2014 (Marco Civil da Internet) e no art. 441 do Código de Processo Civil.";
+  return '<div class="para">'+t+'</div><div class="legal">'+legal+'</div>';
+}
+
+function montar(d){
+  $("secProp").innerHTML =
+    linha("Nome / Razão social", d.prop.nome) +
+    linha(d.prop.tp === "PJ" ? "CNPJ" : "CPF", d.prop.doc || "Não informado") +
+    linha("E-mail", d.prop.email) +
+    linha("Telefone / WhatsApp", d.prop.tel);
+
+  $("secImo").innerHTML =
+    linha("Tipo de imóvel", d.imo.tipo) +
+    linha("Endereço", endereco(d.imo)) +
+    linha("Valor de venda", moeda(d.imo.valor));
+
+  $("secCom").innerHTML =
+    linha("Comissão", (d.com.comissao||"5")+"%") +
+    linha("Exclusividade", d.com.excl === "sim" ? "Com exclusividade" : "Sem exclusividade") +
+    linha("Prazo da autorização", d.com.prazo) +
+    linha("Corretor responsável", d.corr) +
+    (d.obs ? linha("Observações", d.obs) : "");
+
+  $("secTermo").innerHTML = termoHTML(d);
+  mostrar("vDoc");
+}
+
+/* --- Habilita o botão só com os 3 consentimentos --- */
+function syncBtn(){
+  var todos = Array.prototype.slice.call(document.querySelectorAll(".cs")).every(function(c){ return c.checked; });
+  $("btnAceitar").disabled = !todos;
+}
+document.querySelectorAll(".cs").forEach(function(c){ c.addEventListener("change", syncBtn); });
+
+/* --- Captura de IP / dispositivo --- */
+function pegarIP(){
+  return fetch("https://api.ipify.org?format=json")
+    .then(function(r){ return r.json(); })
+    .then(function(j){ return j.ip || "não capturado"; })
+    .catch(function(){ return "não capturado"; });
+}
+
+/* --- Monta o corpo do e-mail (HTML) e o Word --- */
+function reportHTML(d, reg){
+  function bloco(titulo, linhasHTML){
+    return '<tr><td style="padding:14px 0 6px;font-family:Georgia,serif;font-size:17px;color:#b8924f;'
+      + 'border-bottom:1px solid #e4ded3;font-weight:bold">'+esc(titulo)+'</td></tr>'
+      + '<tr><td style="padding:6px 0 12px">'+linhasHTML+'</td></tr>';
+  }
+  function lin(k,v){
+    return '<div style="display:flex;justify-content:space-between;gap:14px;padding:4px 0;'
+      + 'border-bottom:1px dashed #eee;font-size:14px">'
+      + '<span style="color:#888">'+esc(k)+'</span><span style="color:#222;font-weight:600;text-align:right">'+esc(v)+'</span></div>';
+  }
+  var html =
+   '<div style="max-width:640px;margin:0 auto;font-family:Arial,Helvetica,sans-serif;color:#222">'
+   + '<div style="text-align:center;padding:8px 0 14px">'
+   + '<div style="font-family:Georgia,serif;font-size:28px;color:#111;font-weight:bold">Mude <span style="color:#b8924f">Imóveis</span></div>'
+   + '<div style="font-size:11px;letter-spacing:3px;color:#999;text-transform:uppercase">Autorização de Venda · Aceite Eletrônico</div></div>'
+   + '<table style="width:100%;border-collapse:collapse">'
+   + bloco("1. Proprietário (Outorgante)",
+        lin("Nome / Razão social", d.prop.nome)
+      + lin(d.prop.tp==="PJ"?"CNPJ":"CPF", d.prop.doc||"Não informado")
+      + lin("E-mail", d.prop.email) + lin("Telefone / WhatsApp", d.prop.tel))
+   + bloco("2. Imóvel",
+        lin("Tipo", d.imo.tipo) + lin("Endereço", endereco(d.imo)) + lin("Valor de venda", moeda(d.imo.valor)))
+   + bloco("3. Condições da intermediação",
+        lin("Comissão", (d.com.comissao||"5")+"%")
+      + lin("Exclusividade", d.com.excl==="sim"?"Com exclusividade":"Sem exclusividade")
+      + lin("Prazo", d.com.prazo) + lin("Corretor responsável", d.corr)
+      + (d.obs ? lin("Observações", d.obs) : ""))
+   + bloco("4. Termo de autorização",
+        '<div style="font-size:13.5px;text-align:justify;line-height:1.6">'+termoHTML(d).replace(/<[^>]*class="[^"]*"[^>]*>/g,'<div>')+'</div>')
+   + bloco("5. Registro eletrônico do aceite",
+        lin("Aceite", "Termo, LGPD e declaração eletrônica confirmados")
+      + lin("Endereço IP", reg.ip) + lin("Data e hora", reg.data)
+      + lin("Dispositivo / navegador", reg.disp))
+   + '</table>'
+   + '<div style="font-size:11px;color:#999;text-align:center;margin-top:18px;line-height:1.5">'
+   + 'Documento gerado por preenchimento assistido da Mude Imóveis e autorizado eletronicamente pelo proprietário. '
+   + 'Registro com fundamento no art. 10 da Lei 12.965/2014 (Marco Civil) e art. 441 do CPC.</div>'
+   + '<div style="text-align:center;font-family:Georgia,serif;color:#111;margin-top:14px">Mude Imóveis — Mude que a Gente te Acompanha.</div>'
+   + '</div>';
+  return html;
+}
+
+function gerarWord(htmlCorpo){
+  var doc = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">'
+    + '<head><meta charset="utf-8"></head><body>' + htmlCorpo + '</body></html>';
+  return 'data:application/msword;base64,' + btoa(unescape(encodeURIComponent(doc)));
+}
+
+/* --- Envio --- */
+function aceitar(){
+  if(!DADOS) return;
+  mostrar("vEnviando");
+  pegarIP().then(function(ip){
+    var reg = { ip: ip, data: dataBR(), disp: navigator.userAgent };
+    var corpo = reportHTML(DADOS, reg);
+    var word  = gerarWord(corpo);
+    var params = {
+      report_html: corpo,
+      content_word: word,
+      to_email: DESTINO,
+      subject: "Autorização de Venda (aceite) — " + (DADOS.prop.nome || "")
+    };
+
+    function soCorpo(){
+      var p2 = { report_html: corpo, to_email: DESTINO, subject: params.subject };
+      return emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, p2);
+    }
+
+    emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, params)
+      .then(function(){ mostrar("vOk"); })
+      .catch(function(){
+        /* fallback resiliente: reenvia só com o corpo (mesma lógica do sistema atual) */
+        soCorpo().then(function(){ mostrar("vOk"); })
+          .catch(function(err){
+            mostrar("vDoc");
+            alert("Não foi possível registrar a autorização agora. Verifique sua conexão e tente novamente.\n\nMotivo técnico: " + (err && (err.text||err.message) || "desconhecido"));
+          });
+      });
+  });
+}
+
+/* --- Inicialização --- */
+(function init(){
+  try { if(window.emailjs) emailjs.init({ publicKey: EMAILJS_PUBLIC }); } catch(e){}
+  if(!DADOS || !DADOS.prop || !DADOS.imo){ mostrar("vErro"); return; }
+  montar(DADOS);
+  $("btnAceitar").addEventListener("click", aceitar);
+})();
+</script>
+</body>
+</html>
