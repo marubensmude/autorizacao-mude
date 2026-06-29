@@ -367,7 +367,7 @@ footer.inst b{color:var(--grafite);font-weight:400}
           </div>
           <div class="field">
             <label>WhatsApp<span class="req">*</span></label>
-            <input type="tel" name="prop_whats" placeholder="(67) 99999-9999" data-mask="fone" required>
+            <input type="tel" name="prop_whats" placeholder="(67)99999-9999" data-mask="fone" required>
             <div class="err-msg">Informe um telefone válido.</div>
           </div>
           <div class="note full">
@@ -607,7 +607,7 @@ footer.inst b{color:var(--grafite);font-weight:400}
           <div class="section-label">Valor e condições</div>
           <div class="field">
             <label>Valor pretendido pelo(s) proprietário(s)<span class="req">*</span></label>
-            <div class="prefix"><span class="pf">R$</span><input type="text" name="valor" inputmode="numeric" placeholder="1.850.000" data-mask="moeda" required></div>
+            <div class="prefix"><span class="pf">R$</span><input type="text" name="valor" inputmode="numeric" placeholder="R$ 0,00" data-mask="moeda" required></div>
             <div class="err-msg">Informe o valor pretendido.</div>
           </div>
           <div class="field">
@@ -749,7 +749,7 @@ footer.inst b{color:var(--grafite);font-weight:400}
           <div class="field" id="prazoWrap" style="display:none">
             <label>Prazo de vigência da autorização</label>
             <select name="prazo">
-              <option>30 dias</option><option>60 dias</option><option selected>180 dias</option><option>365 dias</option><option>Até vender</option>
+              <option>30 dias</option><option>60 dias</option><option>180 dias</option><option>365 dias</option><option selected>Até a venda</option>
             </select>
           </div>
           <div class="note full">
@@ -1277,10 +1277,10 @@ function mask(el){
   el.addEventListener('input',()=>{
     let v=el.value.replace(/\D/g,'');
     if(t==='cpfcnpj'){v=(el.dataset.doc==='cnpj')?fmtCNPJ(v):fmtCPF(v);}
-    else if(t==='fone'){v=v.slice(0,11).replace(/^(\d{2})(\d)/,'($1) $2').replace(/(\d{5})(\d)/,'$1-$2');}
+    else if(t==='fone'){v=v.slice(0,11).replace(/^(\d{2})(\d)/,'($1)$2').replace(/(\d{5})(\d)/,'$1-$2');}
     else if(t==='cep'){v=v.slice(0,8).replace(/(\d{5})(\d)/,'$1-$2');}
     else if(t==='numero'){v=v.slice(0,4);}
-    else if(t==='moeda'){v=v?(parseInt(v,10)/100).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}):'';}
+    else if(t==='moeda'){v=v?'R$ '+(parseInt(v,10)/100).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}):'';}
     el.value=v;
   });
 }
@@ -1314,6 +1314,13 @@ function validaCNPJ(v){
   return calc(v.slice(0,13))===+v[13];
 }
 function docValido(v){const n=(v||'').replace(/\D/g,'');return n.length<=11?validaCPF(n):validaCNPJ(n);}
+function emailOk(e){ e=String(e).toLowerCase().trim();
+  if(!/^[a-z0-9](?:[a-z0-9._%+\-]*[a-z0-9])?@[a-z0-9](?:[a-z0-9\-]*[a-z0-9])?(?:\.[a-z]{2,})+$/.test(e)) return false;
+  var dom=e.split("@")[1], loc=e.split("@")[0];
+  var bad=["teste.com","test.com","example.com","exemplo.com","email.com","mailinator.com","tempmail.com","10minutemail.com","guerrillamail.com","yopmail.com","fake.com","abc.com"];
+  if(bad.indexOf(dom)>=0) return false;
+  if(/^(teste|test|asdf|aaaa|aaa|xxx|fulano|exemplo|nome)$/.test(loc)) return false;
+  return true; }
 const cpfEl=$('input[name=prop_cpf]');
 if(cpfEl)cpfEl.addEventListener('blur',()=>{
   const f=cpfEl.closest('.field'),em=f.querySelector('.err-msg');
@@ -1399,6 +1406,7 @@ function validateStep(){
   if(cur===0){
     const cf=$('input[name=prop_cpf]'),fld=cf.closest('.field'),em=fld.querySelector('.err-msg');
     if(cf.value&&!docValido(cf.value)){fld.classList.add('invalid');em.textContent='CPF/CNPJ inválido. Confira os números digitados.';ok=false;}
+    var ef=$('input[name=prop_email]'); if(ef){ var efl=ef.closest('.field'),eem=efl.querySelector('.err-msg'); if(ef.value&&!emailOk(ef.value)){efl.classList.add('invalid'); if(eem)eem.textContent='E-mail inválido. Informe um e-mail real e válido.'; ok=false;} }
   }
   if(cur===7){
     const t=$('input[name=aceite_termo]').checked,l=$('input[name=aceite_lgpd]').checked;
