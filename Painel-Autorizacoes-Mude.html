@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Autorizações · Mude Imóveis</title>
+<style>
+:root { color-scheme: light; --preto:#111111; --dourado:#C6A15B; --ok:#2e7d32; --alerta:#c77700; --venc:#c0392b; --cinza:#8a8377; --linha:#ece7db; }
+* { box-sizing: border-box; }
+body { margin:0; background:#f6f4ef; color:var(--preto); font-family: -apple-system, Segoe UI, Arial, sans-serif; font-size:15px; }
+.wrap { max-width:760px; margin:0 auto; padding:0 12px 40px; }
+header.top { background:var(--preto); color:#fff; padding:16px 14px; border-radius:0 0 14px 14px; display:flex; justify-content:space-between; align-items:flex-start; gap:10px; }
+header.top h1 { margin:0; font-size:17px; letter-spacing:.3px; }
+header.top h1 .g { color:var(--dourado); }
+header.top .sub { color:#c9c3b6; font-size:12px; margin-top:3px; }
+#recarregar { background:transparent; border:1px solid var(--dourado); color:var(--dourado); border-radius:9px; padding:7px 12px; font-size:13px; cursor:pointer; white-space:nowrap; }
+.tiles { display:grid; grid-template-columns:repeat(auto-fit,minmax(96px,1fr)); gap:8px; margin:14px 0; }
+.tile { background:#fff; border:1px solid var(--linha); border-radius:12px; padding:10px 8px; text-align:center; }
+.tile .n { font-size:22px; font-weight:700; }
+.tile .l { font-size:11px; color:var(--cinza); margin-top:2px; }
+.tile.venc .n{color:var(--venc);} .tile.alerta .n{color:var(--alerta);} .tile.ok .n{color:var(--ok);}
+.controls { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:12px; }
+#busca { flex:1 1 160px; min-width:140px; padding:9px 12px; border:1px solid var(--linha); border-radius:10px; font-size:14px; background:#fff; }
+.chips { display:flex; flex-wrap:wrap; gap:6px; }
+.chip { border:1px solid var(--linha); background:#fff; color:#444; border-radius:999px; padding:6px 12px; font-size:12.5px; cursor:pointer; }
+.chip.active { background:var(--preto); color:#fff; border-color:var(--preto); }
+.exrow { font-size:12px; color:var(--cinza); display:flex; align-items:center; gap:6px; margin:-4px 0 12px; }
+.card { background:#fff; border:1px solid var(--linha); border-left:4px solid var(--cinza); border-radius:12px; padding:12px 14px; margin-bottom:10px; }
+.card.s-vigente{border-left-color:var(--ok);} .card.s-vencendo{border-left-color:var(--alerta);}
+.card.s-vencida{border-left-color:var(--venc);} .card.s-vendido{border-left-color:#555;} .card.ex{opacity:.6;}
+.card .row1 { display:flex; justify-content:space-between; gap:10px; align-items:baseline; }
+.cod { font-weight:700; font-size:13px; letter-spacing:.3px; }
+.badge { font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; white-space:nowrap; }
+.b-vigente{background:#e8f3e9;color:var(--ok);} .b-vencendo{background:#fdf0dc;color:var(--alerta);}
+.b-vencida{background:#fbe6e3;color:var(--venc);} .b-vendido{background:#eee;color:#555;} .b-outro{background:#eee;color:#555;}
+.prop { font-weight:600; margin:6px 0 2px; }
+.meta { font-size:13px; color:#555; }
+.venc { font-size:12.5px; margin-top:7px; }
+.venc b.warn{color:var(--alerta);} .venc b.late{color:var(--venc);} .venc b.good{color:var(--ok);}
+.pdf { display:inline-block; margin-top:8px; font-size:13px; color:var(--dourado); text-decoration:none; font-weight:600; }
+.pdf.disabled { color:var(--cinza); font-weight:400; }
+.empty { text-align:center; color:var(--cinza); padding:30px 10px; }
+.err { background:#fbe6e3; color:var(--venc); border:1px solid #f0c4bd; padding:12px; border-radius:10px; font-size:13px; }
+.foot { text-align:center; color:var(--cinza); font-size:11px; margin-top:16px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>Autorizações <span class="g">·</span> <span class="g">Mude Imóveis</span></h1>
+      <div class="sub" id="sub">Carregando…</div>
+    </div>
+    <button id="recarregar">↻ Recarregar</button>
+  </header>
+
+  <div class="tiles" id="tiles"></div>
+
+  <div class="controls">
+    <input id="busca" type="search" placeholder="Buscar por proprietário, código ou bairro…">
+    <div class="chips" id="chips"></div>
+  </div>
+  <label class="exrow"><input type="checkbox" id="ocultarEx" checked> ocultar linhas de exemplo</label>
+
+  <div id="lista"></div>
+  <div class="foot">Fonte: planilha Índice de Autorizações (publicada). Toque em Recarregar para atualizar.</div>
+</div>
+
+<script>
+const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRmLbO2oe7SUX0dQYrRfjFwQJNScLhcAv9T6lyo_JNc9Vie9wsJeNDc7EXrDOnz1R1g_CCIRAdg8KZi/pub?gid=1280106605&single=true&output=csv";
+const AVISO_DIAS = 15;
+let ITENS = [];
+let filtro = localStorage.getItem("mude_filtro") || "Todos";
+let ocultarEx = localStorage.getItem("mude_ocultarEx");
+ocultarEx = ocultarEx === null ? true : ocultarEx === "1";
+
+// -------- CSV parser (aspas, vírgulas dentro de aspas, quebras) --------
+function parseCSV(text){
+  const rows=[]; let row=[], val="", i=0, q=false;
+  text=text.replace(/\r/g,"");
+  while(i<text.length){
+    const c=text[i];
+    if(q){
+      if(c==='"'){ if(text[i+1]==='"'){val+='"';i++;} else q=false; }
+      else val+=c;
+    } else {
+      if(c==='"') q=true;
+      else if(c===','){ row.push(val); val=""; }
+      else if(c==='\n'){ row.push(val); rows.push(row); row=[]; val=""; }
+      else val+=c;
+    }
+    i++;
+  }
+  if(val!==""||row.length){ row.push(val); rows.push(row); }
+  return rows;
+}
+
+function parseData(s){
+  if(!s) return null; s=String(s).trim();
+  const m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/); if(!m) return null;
+  const ano=m[3].length===2?"20"+m[3]:m[3];
+  return new Date(+ano,+m[2]-1,+m[1]);
+}
+function parsePrazo(s){
+  s=String(s||"").toLowerCase(); const m=s.match(/(\d+)/); if(!m) return null;
+  const n=+m[1];
+  if(s.includes("ano")) return n*365;
+  if(s.includes("mes")||s.includes("mês")) return n*30;
+  return n;
+}
+function classifica(it){
+  const st=(it.status||"").toLowerCase();
+  if(st.includes("vend")) return "vendido";
+  if(st.includes("cancel")) return "outro";
+  if(st.includes("vigente")){
+    if(it.dias==null) return "vigente";
+    if(it.dias<0) return "vencida";
+    if(it.dias<=AVISO_DIAS) return "vencendo";
+    return "vigente";
+  }
+  if(st.includes("venc")) return "vencida";
+  return "outro";
+}
+
+async function carregar(){
+  const sub=document.getElementById("sub");
+  sub.textContent="Carregando…";
+  try{
+    const resp=await fetch(CSV_URL + "&_=" + Date.now(), {cache:"no-store"});
+    if(!resp.ok) throw new Error("HTTP "+resp.status);
+    const txt=await resp.text();
+    ITENS=montar(parseCSV(txt));
+    render();
+    sub.textContent = ITENS.length + " registro(s) · atualizado " + new Date().toLocaleString("pt-BR");
+  }catch(e){
+    document.getElementById("lista").innerHTML='<div class="err">Não consegui ler a planilha publicada. Verifique se ela continua publicada na Web e tente Recarregar. ('+ (e&&e.message||e) +')</div>';
+    sub.textContent="erro ao carregar";
+  }
+}
+
+function montar(rows){
+  let hi=rows.findIndex(r=>r.map(c=>String(c).trim()).includes("Código"));
+  if(hi<0) return [];
+  const head=rows[hi].map(c=>String(c).trim());
+  const idx=n=>head.indexOf(n);
+  const iCod=idx("Código"),iData=idx("Data de emissão"),iProp=idx("Proprietário"),
+    iImo=idx("Imóvel (tipo)"),iBai=idx("Bairro / Endereço"),iVal=idx("Valor pretendido (R$)"),
+    iPra=idx("Validade"),iOri=idx("Origem"),iSta=idx("Status"),iLnk=idx("Link do PDF");
+  const out=[]; const hoje=new Date(); hoje.setHours(0,0,0,0);
+  for(let r=hi+1;r<rows.length;r++){
+    const row=rows[r]; const cod=String(row[iCod]||"").trim();
+    if(!cod) continue;
+    if(row.every(c=>!String(c).trim())) continue;
+    const emissao=parseData(row[iData]); const prazo=parsePrazo(row[iPra]);
+    let venc=null,dias=null;
+    if(emissao&&prazo){ venc=new Date(emissao); venc.setDate(venc.getDate()+prazo); dias=Math.round((venc-hoje)/864e5); }
+    const it={cod,data:String(row[iData]||""),prop:String(row[iProp]||""),imovel:String(row[iImo]||""),
+      bairro:String(row[iBai]||""),valor:String(row[iVal]||""),origem:String(row[iOri]||""),
+      status:String(row[iSta]||""),link:String(row[iLnk]||"").trim(),venc,dias,
+      exemplo:String(row[iProp]||"").includes("[EXEMPLO]")};
+    it.cls=classifica(it);
+    out.push(it);
+  }
+  return out;
+}
+
+function money(v){ const n=Number(String(v).replace(/[^\d]/g,"")); if(!n) return v||"—"; return "R$ "+n.toLocaleString("pt-BR"); }
+function isUrl(s){ return /^https?:\/\//i.test(s); }
+
+function render(){
+  const base=ITENS.filter(it=>!(ocultarEx&&it.exemplo));
+  const c={total:base.length,vig:0,ven:0,late:0,vend:0};
+  base.forEach(it=>{ if(it.cls==="vigente")c.vig++; else if(it.cls==="vencendo")c.ven++; else if(it.cls==="vencida")c.late++; else if(it.cls==="vendido")c.vend++; });
+  document.getElementById("tiles").innerHTML=
+    tile(c.total,"Registros","")+tile(c.vig,"Vigentes","ok")+tile(c.ven,"Vencendo ≤"+AVISO_DIAS+"d","alerta")+tile(c.late,"Vencidas","venc")+tile(c.vend,"Vendidos","");
+  const cats=["Todos","Vigente","Vencendo","Vencida","Vendido"];
+  document.getElementById("chips").innerHTML=cats.map(x=>`<span class="chip ${filtro===x?'active':''}" data-f="${x}">${x}</span>`).join("");
+  document.querySelectorAll(".chip").forEach(el=>el.onclick=()=>{filtro=el.dataset.f;localStorage.setItem("mude_filtro",filtro);render();});
+
+  const q=(document.getElementById("busca").value||"").toLowerCase();
+  let arr=base.filter(it=>{
+    const okF = filtro==="Todos" ? true :
+      filtro==="Vencendo" ? it.cls==="vencendo" :
+      filtro==="Vencida" ? it.cls==="vencida" :
+      filtro==="Vendido" ? it.cls==="vendido" :
+      filtro==="Vigente" ? (it.cls==="vigente"||it.cls==="vencendo") : true;
+    const okQ = !q || (it.prop+" "+it.cod+" "+it.bairro+" "+it.imovel).toLowerCase().includes(q);
+    return okF&&okQ;
+  });
+  const ord={vencida:0,vencendo:1,vigente:2,vendido:3,outro:4};
+  arr.sort((a,b)=>(ord[a.cls]-ord[b.cls])|| ((a.dias??1e9)-(b.dias??1e9)));
+
+  const lista=document.getElementById("lista");
+  lista.innerHTML = arr.length ? arr.map(card).join("") : '<div class="empty">Nenhuma autorização para este filtro.</div>';
+}
+function tile(n,l,cls){ return `<div class="tile ${cls}"><div class="n">${n}</div><div class="l">${l}</div></div>`; }
+function badge(it){
+  const map={vigente:["Vigente","b-vigente"],vencendo:["Vencendo","b-vencendo"],vencida:["Vencida","b-vencida"],vendido:["Vendido","b-vendido"],outro:[it.status||"—","b-outro"]};
+  const [t,c]=map[it.cls]||map.outro; return `<span class="badge ${c}">${t}</span>`;
+}
+function vencTxt(it){
+  if(it.dias==null) return `<div class="venc" style="color:var(--cinza)">Preencha Data de emissão e Validade para calcular o vencimento.</div>`;
+  const d=it.venc.toLocaleDateString("pt-BR");
+  if(it.dias<0) return `<div class="venc">Vencimento ${d} · <b class="late">venceu há ${Math.abs(it.dias)} dia(s)</b></div>`;
+  if(it.dias===0) return `<div class="venc">Vencimento ${d} · <b class="warn">vence HOJE</b></div>`;
+  const cls=it.dias<=AVISO_DIAS?"warn":"good";
+  return `<div class="venc">Vencimento ${d} · <b class="${cls}">faltam ${it.dias} dia(s)</b></div>`;
+}
+function card(it){
+  const link = isUrl(it.link) ? `<a class="pdf" href="${it.link}" target="_blank" rel="noopener">Abrir PDF →</a>`
+    : `<span class="pdf disabled">PDF não vinculado</span>`;
+  return `<div class="card s-${it.cls} ${it.exemplo?'ex':''}">
+    <div class="row1"><span class="cod">${it.cod}</span>${badge(it)}</div>
+    <div class="prop">${it.prop||"—"}</div>
+    <div class="meta">${[it.imovel,it.bairro].filter(Boolean).join(" · ")||"—"}</div>
+    <div class="meta">${money(it.valor)} · ${it.origem||"—"}</div>
+    ${vencTxt(it)}
+    ${link}
+  </div>`;
+}
+
+document.getElementById("busca").addEventListener("input",render);
+document.getElementById("recarregar").addEventListener("click",carregar);
+const ex=document.getElementById("ocultarEx"); ex.checked=ocultarEx;
+ex.addEventListener("change",()=>{ocultarEx=ex.checked;localStorage.setItem("mude_ocultarEx",ex.checked?"1":"0");render();});
+carregar();
+</script>
+</body>
+</html>
