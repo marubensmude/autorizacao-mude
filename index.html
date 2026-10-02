@@ -662,6 +662,20 @@ footer.inst b{color:var(--grafite);font-weight:400}
 
       <!-- ETAPA 4 — CARACTERÍSTICAS (DINÂMICO) -->
       <section class="step" data-step="3">
+        <div class="mck-destaque" id="mckDestaque" style="margin:0 0 26px">
+          <div class="mck-d-top">
+            <div class="mck-d-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+            <div>
+              <div class="mck-d-eyebrow">Etapa essencial do anúncio</div>
+              <div class="mck-d-tit">O que seu imóvel tem?</div>
+              <p class="mck-d-txt">Marque os itens do imóvel e, quando for o caso, do condomínio e do bairro. São 5 grupos e basta tocar nas opções.<span id="mckRegra"> Para concluir a autorização, selecione <b>pelo menos 10 itens</b>.</span></p>
+            </div>
+          </div>
+          <div class="mck-d-prog" id="mckProg"><div class="mck-d-bar"><i id="mckBar"></i></div><span id="mckStatus">0 de 10 itens</span></div>
+          <button type="button" class="mck-btn" id="mckAbrir"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span id="mckBtnTxt">O que seu imóvel tem?</span></button>
+          <div class="mck-preview" id="mckPreview"></div>
+          <input type="hidden" name="checklist_itens" id="mckHidden">
+        </div>
         <div class="grid">
           <div class="section-label" id="caractTitle">Características do imóvel</div>
           <div class="field" id="condicaoBlock">
@@ -679,20 +693,6 @@ footer.inst b{color:var(--grafite);font-weight:400}
           </div>
         </div>
         <div id="dynamicFields" style="margin-top:18px"></div>
-        <div class="mck-destaque" id="mckDestaque">
-          <div class="mck-d-top">
-            <div class="mck-d-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
-            <div>
-              <div class="mck-d-eyebrow">Etapa essencial do anúncio</div>
-              <div class="mck-d-tit">O que seu imóvel tem?</div>
-              <p class="mck-d-txt">Marque os itens do imóvel e, quando for o caso, do condomínio e do bairro. São 5 grupos e basta tocar nas opções.<span id="mckRegra"> Para concluir a autorização, selecione <b>pelo menos 10 itens</b>.</span></p>
-            </div>
-          </div>
-          <div class="mck-d-prog" id="mckProg"><div class="mck-d-bar"><i id="mckBar"></i></div><span id="mckStatus">0 de 10 itens</span></div>
-          <button type="button" class="mck-btn" id="mckAbrir"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span id="mckBtnTxt">O que seu imóvel tem?</span></button>
-          <div class="mck-preview" id="mckPreview"></div>
-          <input type="hidden" name="checklist_itens" id="mckHidden">
-        </div>
         <div class="grid" style="margin-top:18px">
           <div class="field full">
             <label>Descrição complementar do imóvel
