@@ -382,12 +382,11 @@ footer.inst b{color:var(--grafite);font-weight:400}
         <div class="grid">
           <div class="section-label">Atendimento</div>
           <div class="field full">
-            <label>Corretor(a) Mude responsável pela captação</label>
-            <select name="corretor">
+            <label>Corretor(a) Mude que está atendendo você<span class="req">*</span></label>
+            <select name="corretor" required>
               <option value="">Selecione o corretor</option>
-              <option>Mário Rubens</option><option>Paulo Maioque</option><option>Camila</option>
-              <option>Caio</option><option>João Victor</option><option>Leonardo</option>
-              <option>Mariucia</option><option>Marcus Luiz</option><option>Mariley</option>
+              <option>Mário Rubens</option><option>Paulo Maioque</option><option>Camila Siqueira</option><option>Arari Leonardo</option><option>Mariucia B.Inácio</option>
+              <option>Não sei informar</option>
             </select>
           </div>
           <div class="field full">
@@ -884,6 +883,7 @@ footer.inst b{color:var(--grafite);font-weight:400}
             <p>Pelo presente instrumento, o(s) proprietário(s) acima qualificado(s) <strong>AUTORIZA(M)</strong> a <strong>MRM Negócios e Consultorias Imobiliárias Ltda. — Mude Imóveis</strong>, inscrita no <strong>CRECI/MS nº 6052-J</strong>, a promover a <strong>intermediação da venda</strong> do imóvel descrito neste documento, declarando ser legítimo possuidor e proprietário do bem, responsabilizando-se pelas condições aqui especificadas.</p>
             <p>O(s) proprietário(s) autoriza(m) ainda a <strong>divulgação do imóvel</strong> por meio de internet, portais, redes sociais, jornais, fotos, placas, faixas e demais meios de comunicação para fins comerciais, pela Mude Imóveis e seus corretores credenciados, desde que utilizando a identificação da imobiliária.</p>
             <p>A comissão de intermediação fica ajustada em <strong>5% (cinco por cento)</strong> sobre o valor efetivamente negociado, devida nos termos dos <strong>arts. 722 a 729 do Código Civil</strong>.</p>
+            <p>Instrumento válido para assinatura física ou digital, conforme MP nº 2.200-2/2001 e Lei nº 14.063/2020.</p>
             <p class="ref">Fundamentos: Lei 6.530/78 · Decreto 81.871/78, art. 5º · Resolução COFECI 005/78 · Resolução COFECI 1.404/2018 · Código Civil, arts. 722–729 · Modelo CRECI-MS.</p>
           </div>
 
@@ -1490,7 +1490,8 @@ function val(n){const e=$('[name="'+n+'"]');return e?e.value:'';}
 function checks(name){return [...$$('[data-check="'+name+'"] input:checked')].map(i=>i.value).join(', ');}
 function radio(n){const e=$('input[name="'+n+'"]:checked');return e?e.value:'—';}
 const CRECI={'Mário Rubens':'CRECI/MS 5710'};
-function corretorLabel(){const c=val('corretor');if(!c)return '';return CRECI[c]?c+' ('+CRECI[c]+')':c;}
+function corretorNome(){const c=val('corretor');return c==='Não sei informar'?'A definir pela Mude Imóveis':c;}
+function corretorLabel(){const c=corretorNome();if(!c)return '';return CRECI[c]?c+' ('+CRECI[c]+')':c;}
 function condominioLabel(){
   const emc=$('input[name=emcond]:checked');if(!emc||emc.value!=='Sim')return '';
   const sel=val('condominio_nome');
@@ -1514,7 +1515,7 @@ function termoHTML(){
     `A comissão de intermediação fica ajustada em ${com}% (cinco por cento, salvo percentual indicado) sobre o valor efetivamente negociado, devida nos termos dos arts. 722 a 729 do Código Civil.`,
     `O OUTORGANTE declara que as informações prestadas são verdadeiras e consente, conforme a LGPD (Lei 13.709/2018), com o tratamento de seus dados pessoais pela Mude Imóveis para fins de intermediação imobiliária, divulgação do imóvel e contato comercial.`
   ];
-  return ps.map(t=>para(t)).join('')+para('Fundamentos legais: Lei 6.530/78 · Decreto 81.871/78, art. 5º · Resolução COFECI 005/78 · Resolução COFECI 1.404/2018 · Código Civil, arts. 722–729 · Modelo CRECI-MS.','ref');
+  return ps.map(t=>para(t)).join('')+para('Instrumento válido para assinatura física ou digital, conforme MP nº 2.200-2/2001 e Lei nº 14.063/2020.')+para('Fundamentos legais: Lei 6.530/78 · Decreto 81.871/78, art. 5º · Resolução COFECI 005/78 · Resolução COFECI 1.404/2018 · Código Civil, arts. 722–729 · Modelo CRECI-MS.','ref');
 }
 function regHTML(){
   const R=window.REGINFO||{};
@@ -1905,7 +1906,7 @@ window.finalizar=async()=>{
   const base={
     cliente: val('prop_nome')||'Cliente',
     tipo: (TIPOS.find(t=>t.id===val('tipo'))||{}).nome||'',
-    corretor: val('corretor')||'',
+    corretor: corretorNome()||'',
     to_email: EMAIL_MUDE,
     reply_to: val('prop_email')||'',
     report_html: reportHTML(),
